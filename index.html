@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gustavo Galeano - Software Developer • AI Specialist • Researcher</title>
+    <meta name="description"
+        content="Gustavo Adolfo Galeano Duarte - Software Developer, AI Specialist, Researcher">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'ui-sans-serif', 'Segoe UI', 'Roboto', 'sans-serif']
+                    },
+                    colors: {
+                        print: {
+                            dark: '#2c3e50',
+                            text: '#34495e',
+                            light: '#ecf0f1'
+                        }
+                    }
+                }
+            }
+        };
+
+        // Language management
+        let currentLang = localStorage.getItem('cv-language') || 'es';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('cv-language', lang);
+            document.documentElement.lang = lang;
+
+            document.querySelectorAll('[data-es][data-en]').forEach(element => {
+                element.textContent = element.getAttribute(`data-${lang}`);
+            });
+
+            const langBtn = document.getElementById('langToggle');
+            if (langBtn) {
+                langBtn.textContent = lang === 'es' ? 'EN' : 'ES';
+            }
+        }
+
+        function toggleLanguage() {
+            setLanguage(currentLang === 'es' ? 'en' : 'es');
+        }
+
+        // PDF Export function
+        function exportToPDF() {
+            window.print();
+        }
+
+        // Smooth scroll
+        function scrollToSection(id) {
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setLanguage(currentLang);
+        });
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Hero background gradient */
+        .hero-gradient {
+            background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+        }
+
+        /* Animated gradient text */
+        .gradient-text {
+            background: linear-gradient(90deg, #a3e635, #84cc16);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Profile image styling */
+        .profile-image {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-image img {
+            object-fit: cover;
+            object-position: center;
+            filter: grayscale(20%);
+            transition: all 0.3s ease;
+        }
+
+        .profile-image:hover img {
+            filter: grayscale(0%);
+            transform: scale(1.05);
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(10px);
+            }
+        }
+
+        /* Section fade-in */
+        section {
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #84cc16;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a3e635;
+        }
+
+        /* Button hover effects */
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(132, 204, 22, 0.3);
+        }
+
+        .btn-secondary {
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: #84cc16;
+            color: #84cc16;
+        }
+
+        /* Print styles for professional PDF */
+        @media print {
+            @page {
+                margin: 0;
+                size: A4;
+            }
+
+            body {
+                background: white !important;
+                color: #333 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* Hide web layout */
+            .web-layout,
+            .web-layout * {
+                display: none !important;
+                visibility: hidden !important;
+                height: 0 !important;
+                overflow: hidden !important;
+            }
+
+            /* Show print layout */
+            .print-layout {
+                display: grid !important;
+                grid-template-columns: 32% 68%;
+                min-height: 100vh;
+                visibility: visible !important;
+            }
+            
+            .print-layout * {
+                visibility: visible !important;
+            }
+
+            /* Sidebar styles */
+            .print-sidebar {
+                background-color: #2c3e50 !important;
+                color: white !important;
+                padding: 2rem;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .print-main {
+                background-color: white !important;
+                padding: 2rem 2.5rem;
+            }
+
+            .print-sidebar h3 {
+                color: white !important;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+                padding-bottom: 0.5rem;
+                margin-bottom: 1rem;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                font-size: 1.1rem;
+            }
+
+            .print-main h3 {
+                color: #2c3e50 !important;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 1.5rem;
+                font-size: 1.2rem;
+                border-bottom: 2px solid #2c3e50;
+                padding-bottom: 0.5rem;
+            }
+
+            /* Timeline for experience */
+            .print-timeline-item {
+                position: relative;
+                padding-left: 1.5rem;
+                margin-bottom: 1.5rem;
+                border-left: 2px solid #2c3e50;
+            }
+
+            .print-timeline-dot {
+                position: absolute;
+                left: -0.4rem;
+                top: 0;
+                width: 0.8rem;
+                height: 0.8rem;
+                background: white;
+                border: 2px solid #2c3e50;
+                border-radius: 50%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- WEB LAYOUT WRAPPER -->
+    <div class="web-layout">
+        <!-- Navigation -->
+        <nav class="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10 no-print">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-10 h-10 rounded-full bg-gradient-to-br from-lime-400 to-lime-600 flex items-center justify-center font-bold text-black">
+                            GG
+                        </div>
+                        <span class="font-semibold text-sm hidden sm:block">Gustavo Galeano</span>
+                    </div>
+
+                    <div class="hidden md:flex items-center gap-8 text-sm">
+                        <a href="#about" class="hover:text-lime-400 transition-colors">
+                            <span data-es="Sobre mí" data-en="About">Sobre mí</span>
+                        </a>
+                        <a href="#skills" class="hover:text-lime-400 transition-colors">Skills</a>
+                        <a href="#experience" class="hover:text-lime-400 transition-colors">
+                            <span data-es="Experiencia" data-en="Experience">Experiencia</span>
+                        </a>
+                        <a href="#education" class="hover:text-lime-400 transition-colors">
+                            <span data-es="Educación" data-en="Education">Educación</span>
+                        </a>
+                        <a href="#contact" class="hover:text-lime-400 transition-colors">
+                            <span data-es="Contacto" data-en="Contact">Contacto</span>
+                        </a>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <button onclick="exportToPDF()"
+                            class="px-4 py-2 text-xs font-semibold bg-lime-500 text-black rounded-full hover:bg-lime-400 transition-colors">
+                            <span data-es="Exportar PDF" data-en="Export PDF">Exportar PDF</span>
+                        </button>
+                        <button id="langToggle" onclick="toggleLanguage()"
+                            class="px-4 py-2 text-xs font-semibold border border-white/20 rounded-full hover:border-lime-400 hover:text-lime-400 transition-colors">
+                            EN
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section id="hero" class="hero-gradient min-h-screen flex items-center relative">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8 w-full">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <!-- Left Content -->
+                    <div class="space-y-8 pt-20 lg:pt-0">
+                        <div class="space-y-4">
+                            <h1 class="text-5xl lg:text-7xl font-light text-white/90">
+                                <span data-es="Hola, soy" data-en="Hi, I am">Hola, soy</span>
+                                <span class="gradient-text font-semibold block mt-2">Gustavo Galeano</span>
+                            </h1>
+                            <p class="text-xl lg:text-2xl text-white/60 font-light">
+                                <span data-es="Desarrollador de Software | Especialista en IA | Investigador"
+                                    data-en="Software Developer | AI Specialist | Researcher">
+                                    Desarrollador de Software | Especialista en IA | Investigador
+                                </span>
+                            </p>
+                        </div>
+
+                        <p class="text-base text-white/70 leading-relaxed max-w-xl"
+                            data-es="Más de 21 años de experiencia en desarrollo de software (.NET/Angular en proyectos recientes), especializado en Inteligencia Artificial, NLP, Computación Cuántica y arquitecturas multi-stack."
+                            data-en="Over 21 years of software development experience (.NET/Angular in recent projects), specialized in Artificial Intelligence, NLP, Quantum Computing and multi-stack architectures.">
+                            Más de 21 años de experiencia en desarrollo de software (.NET/Angular en proyectos recientes), especializado en Inteligencia
+                            Artificial, NLP, Computación Cuántica y arquitecturas multi-stack.
+                        </p>
+
+                        <div class="flex flex-wrap gap-4 no-print">
+                            <a href="#contact"
+                                class="btn-primary inline-flex items-center gap-2 px-8 py-3 bg-lime-500 text-black font-semibold rounded-full">
+                                <span data-es="Ver Perfil" data-en="Show Profile">Ver Perfil</span>
+                            </a>
+                            <a href="#about"
+                                class="btn-secondary inline-flex items-center gap-2 px-8 py-3 border-2 border-white/30 text-white font-semibold rounded-full">
+                                <span data-es="Conocer Más" data-en="Know More">Conocer Más</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right Content - Profile Image -->
+                    <div class="profile-image relative lg:h-[600px] h-[400px] rounded-3xl overflow-hidden">
+                        <img src="img/ggaleano.png" alt="Gustavo Galeano" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 scroll-indicator no-print">
+                <svg class="w-6 h-6 text-lime-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-24 bg-zinc-950">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-4xl font-semibold mb-8">
+                        <span data-es="Sobre mí" data-en="About Me">Sobre mí</span>
+                    </h2>
+                    <div class="space-y-6 text-base text-white/70 leading-relaxed">
+                        <p data-es="Cuento con más de 20 (veinte) años de experiencia en desarrollo de sistemas de distintos ámbitos, desde sistemas de gestión académica (Acad5 – CNC, UNA), gestión de Propiedad Intelectual, hasta sistemas de navegación de embarcaciones en la Hidrovía Paraguay–Paraná."
+                            data-en="I have over 20 years of experience in systems development across various domains, from academic management systems (Acad5 – CNC, UNA), intellectual property management, to vessel navigation systems on the Paraguay-Paraná Waterway.">
+                            Cuento con más de 20 (veinte) años de experiencia en desarrollo de sistemas de distintos
+                            ámbitos, desde sistemas de gestión académica (Acad5 – CNC, UNA), gestión de Propiedad
+                            Intelectual, hasta sistemas de navegación de embarcaciones en la Hidrovía Paraguay–Paraná.
+                        </p>
+                        <p data-es="Poseo acabado conocimiento de numerosos lenguajes de programación tanto front como backend, así como manejo de bases de datos relacionales y sus lenguajes de programación."
+                            data-en="I possess comprehensive knowledge of numerous programming languages for both frontend and backend, as well as relational database management and their programming languages.">
+                            Poseo acabado conocimiento de numerosos lenguajes de programación tanto front como backend,
+                            así como manejo de bases de datos relacionales y sus lenguajes de programación.
+                        </p>
+                        <p data-es="He liderado proyectos de desarrollo de software, tengo facilidad para la investigación y me agrada compartir y recibir conocimiento todo el tiempo."
+                            data-en="I have led software development projects, have a facility for research, and enjoy sharing and receiving knowledge all the time.">
+                            He liderado proyectos de desarrollo de software, tengo facilidad para la investigación y me
+                            agrada compartir y recibir conocimiento todo el tiempo.
+                        </p>
+                        <p data-es="Actualmente me encuentro colaborando en el proyecto 'Investigación Aplicada a un Portal Institucional basado en Inteligencia Artificial', en el marco del Convenio entre la Administración Nacional de Electricidad (ANDE) y la Facultad Politécnica de la Universidad Nacional de Asunción, desempeñándome como Especialista en Inteligencia Artificial."
+                            data-en="I am currently collaborating on the project 'Applied Research on an AI-based Institutional Portal', within the framework of the Agreement between the National Electricity Administration (ANDE) and the Polytechnic Faculty of the National University of Asunción, serving as an Artificial Intelligence Specialist.">
+                            Actualmente me encuentro colaborando en el proyecto "Investigación Aplicada a un Portal
+                            Institucional basado en Inteligencia Artificial", en el marco del Convenio entre la
+                            Administración Nacional de Electricidad (ANDE) y la Facultad Politécnica de la Universidad
+                            Nacional de Asunción, desempeñándome como Especialista en Inteligencia Artificial.
+                        </p>
+                        <p data-es="Asimismo, fui Investigador Asociado en el proyecto conjunto entre la Facultad Politécnica y la Escuela de Comando y Estado Mayor del Ejército –ECEME– denominado 'Simulación de Estrategias de Batalla para el Ejército Paraguayo', donde contribuí en el diseño y desarrollo de sistemas de simulación aplicados al análisis estratégico y operativo."
+                            data-en="I was also an Associate Researcher in the joint project between the Polytechnic Faculty and the Army Command and Staff School –ECEME– called 'Battle Strategy Simulation for the Paraguayan Army', where I contributed to the design and development of simulation systems applied to strategic and operational analysis.">
+                            Asimismo, fui Investigador Asociado en el proyecto conjunto entre la Facultad Politécnica y
+                            la Escuela de Comando y Estado Mayor del Ejército –ECEME– denominado "Simulación de
+                            Estrategias de Batalla para el Ejército Paraguayo", donde contribuí en el diseño y
+                            desarrollo de sistemas de simulación aplicados al análisis estratégico y operativo.
+                        </p>
+                        <p data-es="De manera paralela, vengo profundizando mis estudios y trabajo aplicado en Procesamiento de Lenguaje Natural (PLN) —particularmente modelos basados en transformers, meta-embeddings multilingües, clasificación supervisada de textos y análisis de code-switching (español–guaraní)— así como en Computación Cuántica, explorando algoritmos cuánticos de optimización y simulación, frameworks como Qiskit y su aplicación en escenarios NISQ."
+                            data-en="In parallel, I have been deepening my studies and applied work in Natural Language Processing (NLP) —particularly transformer-based models, multilingual meta-embeddings, supervised text classification, and code-switching analysis (Spanish–Guaraní)— as well as in Quantum Computing, exploring quantum optimization and simulation algorithms, frameworks like Qiskit, and their application in NISQ scenarios.">
+                            De manera paralela, vengo profundizando mis estudios y trabajo aplicado en Procesamiento de
+                            Lenguaje Natural (PLN) —particularmente modelos basados en transformers, meta-embeddings
+                            multilingües, clasificación supervisada de textos y análisis de code-switching
+                            (español–guaraní)— así como en Computación Cuántica, explorando algoritmos cuánticos de
+                            optimización y simulación, frameworks como Qiskit y su aplicación en escenarios NISQ.
+                        </p>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-lime-400">21+</div>
+                            <div class="text-sm text-white/60 mt-2" data-es="Años de Experiencia"
+                                data-en="Years Experience">Años de Experiencia</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-lime-400">50+</div>
+                            <div class="text-sm text-white/60 mt-2" data-es="Proyectos" data-en="Projects">Proyectos
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-lime-400">4+</div>
+                            <div class="text-sm text-white/60 mt-2" data-es="Años Docencia" data-en="Years Teaching">
+                                Años Docencia</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-lime-400">2</div>
+                            <div class="text-sm text-white/60 mt-2" data-es="Publicaciones" data-en="Publications">
+                                Publicaciones</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section (Reordered: SE, AI, QC) -->
+        <section id="skills" class="py-24 bg-black">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8">
+                <h2 class="text-4xl font-semibold mb-12">
+                    <span data-es="Habilidades Técnicas" data-en="Technical Skills">Habilidades Técnicas</span>
+                </h2>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- 1. Software Development -->
+                    <div
+                        class="bg-zinc-900/50 border border-white/10 rounded-2xl p-8 hover:border-lime-400/50 transition-all">
+                        <h3 class="text-xl font-semibold mb-4">
+                            <span data-es="Desarrollo de Software" data-en="Software Development">Desarrollo de
+                                Software</span>
+                        </h3>
+                        <ul class="space-y-3 text-white/70">
+                            <li>• Angular / TypeScript / JavaScript</li>
+                            <li>• .NET / C# / ASP.NET</li>
+                            <li>• Python / FastAPI</li>
+                            <li>• Node.js</li>
+                            <li>• REST APIs & <span data-es="Arquitectura" data-en="Architecture">Arquitectura</span></li>
+                            <li>• SQL Server / Entity Framework</li>
+                            <li>• <span data-es="PostgreSQL / MySQL / MongoDB /" data-en="PostgreSQL / MySQL / MongoDB /">PostgreSQL / MySQL / MongoDB /</span></li>
+                            <li style="padding-left: 0.75rem; list-style: none;"><span data-es="Oracle" data-en="Oracle">Oracle</span></li>
+                            <li>• <span data-es="Arquitectura de Software" data-en="Software Architecture">Arquitectura de Software</span></li>
+                            <li>• <span data-es="Frontend & Backend" data-en="Frontend & Backend">Frontend & Backend</span></li>
+                            <li>• <span data-es="Bases de Datos Relacionales" data-en="Relational Databases">Bases de Datos Relacionales</span></li>
+                            <li>• <span data-es="Liderazgo de Equipos" data-en="Team Leadership">Liderazgo de Equipos</span></li>
+                            <li>• <span data-es="Desarrollo Móvil" data-en="Mobile Development">Desarrollo Móvil</span></li>
+                            <li>• <span data-es="Blockchain" data-en="Blockchain">Blockchain</span></li>
+                        </ul>
+                    </div>
+
+                    <!-- 2. AI & Machine Learning -->
+                    <div
+                        class="bg-zinc-900/50 border border-white/10 rounded-2xl p-8 hover:border-lime-400/50 transition-all">
+                        <h3 class="text-xl font-semibold mb-4">
+                            <span data-es="IA & Machine Learning" data-en="AI & Machine Learning">IA & Machine
+                                Learning</span>
+                        </h3>
+                        <ul class="space-y-3 text-white/70">
+                            <li>• NLP & Transformers</li>
+                            <li>• Meta-Embeddings <span data-es="Multilingües"
+                                    data-en="Multilingual">Multilingües</span></li>
+                            <li>• <span data-es="Clasificación de Textos" data-en="Text Classification">Clasificación de
+                                    Textos</span></li>
+                            <li>• Code-Switching (ES-GN)</li>
+                            <li>• <span data-es="Reconocimiento de Entidades"
+                                    data-en="Named Entity Recognition">Reconocimiento de Entidades</span></li>
+                            <li>• <span data-es="Agentes Conversacionales" data-en="Conversational Agents">Agentes Conversacionales</span></li>
+                            <li>• <span data-es="Clasificación de Sonido" data-en="Sound Classification">Clasificación de Sonido</span></li>
+                        </ul>
+                    </div>
+
+                    <!-- 3. Quantum Computing -->
+                    <div
+                        class="bg-zinc-900/50 border border-white/10 rounded-2xl p-8 hover:border-lime-400/50 transition-all">
+                        <h3 class="text-xl font-semibold mb-4">
+                            <span data-es="Computación Cuántica" data-en="Quantum Computing">Computación Cuántica</span>
+                        </h3>
+                        <ul class="space-y-3 text-white/70">
+                            <li>• Qiskit Framework</li>
+                            <li>• <span data-es="Algoritmos Cuánticos" data-en="Quantum Algorithms">Algoritmos
+                                    Cuánticos</span></li>
+                            <li>• <span data-es="Optimización Cuántica" data-en="Quantum Optimization">Optimización
+                                    Cuántica</span></li>
+                            <li>• NISQ Systems</li>
+                            <li>• <span data-es="Algoritmos basados en Grafos"
+                                    data-en="Graph-based Algorithms">Algoritmos basados en Grafos</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="py-24 bg-zinc-950">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8">
+                <h2 class="text-4xl font-semibold mb-12">
+                    <span data-es="Experiencia Profesional" data-en="Professional Experience">Experiencia
+                        Profesional</span>
+                </h2>
+
+                <div class="space-y-8 max-w-4xl">
+                    <!-- Experience 1 -->
+                    <div class="border-l-2 border-lime-400 pl-8 pb-8">
+                        <div class="flex flex-wrap justify-between items-start gap-4 mb-2">
+                            <div>
+                                <h3 class="text-xl font-semibold">
+                                    <span data-es="Consultor/Analista/Desarrollador"
+                                        data-en="Consultant/Analyst/Developer">Consultor/Analista/Desarrollador</span>
+                                </h3>
+                                <p class="text-lime-400 mt-1">Berkemeyer Attorneys and Counselors</p>
+                            </div>
+                            <span class="text-white/60 text-sm">
+                                <span data-es="15 años" data-en="15 years">15 años</span>
+                            </span>
+                        </div>
+                        <ul class="space-y-2 text-white/70 mt-4">
+                            <li data-es="• Desarrollo externo de nuevos aplicativos, mantenimiento de sistemas y ampliación de funcionalidades"
+                                data-en="• External development of new applications, system maintenance and feature expansion">
+                                • Desarrollo externo de nuevos aplicativos, mantenimiento de sistemas y ampliación de
+                                funcionalidades
+                            </li>
+                            <li data-es="• Consultoría externa al Departamento de Informática"
+                                data-en="• External consulting to IT Department">
+                                • Consultoría externa al Departamento de Informática
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Experience 2 -->
+                    <div class="border-l-2 border-lime-400 pl-8 pb-8">
+                        <div class="flex flex-wrap justify-between items-start gap-4 mb-2">
+                            <div>
+                                <h3 class="text-xl font-semibold">
+                                    <span data-es="Consultor/Analista/Desarrollador"
+                                        data-en="Consultant/Analyst/Developer">Consultor/Analista/Desarrollador</span>
+                                </h3>
+                                <p class="text-lime-400 mt-1">Hidrovías del Paraguay S.A.</p>
+                            </div>
+                            <span class="text-white/60 text-sm">
+                                <span data-es="10 años" data-en="10 years">10 años</span>
+                            </span>
+                        </div>
+                        <ul class="space-y-2 text-white/70 mt-4">
+                            <li data-es="• Desarrollo y mantenimiento de sistemas de navegación (GPS, comunicación satelital)"
+                                data-en="• Development and maintenance of navigation systems (GPS, satellite communication)">
+                                • Desarrollo y mantenimiento de sistemas de navegación (GPS, comunicación satelital)
+                            </li>
+                            <li data-es="• Desarrollo externo de nuevos aplicativos y ampliación de funcionalidades"
+                                data-en="• External development of new applications and feature expansion">
+                                • Desarrollo externo de nuevos aplicativos y ampliación de funcionalidades
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Experience 3 -->
+                    <div class="border-l-2 border-white/20 pl-8 pb-8">
+                        <div class="flex flex-wrap justify-between items-start gap-4 mb-2">
+                            <div>
+                                <h3 class="text-xl font-semibold">
+                                    <span data-es="Jefe del Departamento de Informática"
+                                        data-en="Head of IT Department">Jefe del Departamento de Informática</span>
+                                </h3>
+                                <p class="text-lime-400 mt-1">
+                                    <span data-es="Berkemeyer Attorneys and Counselors"
+                                        data-en="Berkemeyer Attorneys and Counselors">Berkemeyer Attorneys and Counselors</span>
+                                </p>
+                            </div>
+                            <span class="text-white/60 text-sm">
+                                <span data-es="5 años" data-en="5 years">5 años</span>
+                            </span>
+                        </div>
+                        <ul class="space-y-2 text-white/70 mt-4">
+                            <li data-es="• Gestión y administración de sistemas empresariales y administrativos"
+                                data-en="• Management and administration of business and administrative systems">
+                                • Gestión y administración de sistemas empresariales y administrativos
+                            </li>
+                            <li data-es="• Coordinación, distribución, asignación y seguimiento de tareas del personal"
+                                data-en="• Coordination, distribution, assignment and monitoring of staff tasks">
+                                • Coordinación, distribución, asignación y seguimiento de tareas del personal
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Teaching & Research -->
+                    <div class="border-l-2 border-lime-400 pl-8 pb-8">
+                        <div class="flex flex-wrap justify-between items-start gap-4 mb-2">
+                            <div>
+                                <h3 class="text-xl font-semibold">
+                                    <span data-es="Especialista en Inteligencia Artificial"
+                                        data-en="AI Specialist">Especialista en Inteligencia Artificial</span>
+                                </h3>
+                                <p class="text-lime-400 mt-1">
+                                    <span data-es="Facultad Politécnica - ANDE (Convenio)"
+                                        data-en="Polytechnic Faculty - ANDE (Agreement)">Facultad Politécnica -
+                                        ANDE (Convenio)</span>
+                                </p>
+                            </div>
+                            <span class="text-white/60 text-sm">
+                                <span data-es="2 años" data-en="2 years">2 años</span>
+                            </span>
+                        </div>
+                        <p class="text-white/70" data-es="Proyecto: Portal Institucional basado en IA"
+                            data-en="Project: AI-based Institutional Portal">
+                            Proyecto: Portal Institucional basado en IA
+                        </p>
+                    </div>
+
+                    <div class="border-l-2 border-lime-400 pl-8">
+                        <div class="flex flex-wrap justify-between items-start gap-4 mb-2">
+                            <div>
+                                <h3 class="text-xl font-semibold">
+                                    <span data-es="Investigador Adjunto" data-en="Associate Researcher">Investigador
+                                        Adjunto</span>
+                                </h3>
+                                <p class="text-lime-400 mt-1">
+                                    <span data-es="Facultad Politécnica - ECEME (Convenio)"
+                                        data-en="Polytechnic Faculty - ECEME (Agreement)">Facultad Politécnica -
+                                        ECEME (Convenio)</span>
+                                </p>
+                            </div>
+                            <span class="text-white/60 text-sm">
+                                <span data-es="0.5 años" data-en="0.5 years">0.5 años</span>
+                            </span>
+                        </div>
+                        <p class="text-white/70" data-es="Proyecto: Simulación de Estrategias de Batalla"
+                            data-en="Project: Battle Strategy Simulation">
+                            Proyecto: Simulación de Estrategias de Batalla
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Education Section -->
+        <section id="education" class="py-24 bg-black">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8">
+                <h2 class="text-4xl font-semibold mb-12">
+                    <span data-es="Educación & Certificaciones" data-en="Education & Certifications">Educación &
+                        Certificaciones</span>
+                </h2>
+
+                <div class="max-w-4xl space-y-8">
+                    <!-- Ongoing Studies -->
+                    <div class="border-2 border-lime-400/30 rounded-2xl p-6 bg-zinc-900/30">
+                        <div class="flex items-start justify-between gap-4 mb-3">
+                            <h3 class="text-xl font-semibold">
+                                <span data-es="Magíster en Tecnologías de la Información y la Comunicación"
+                                    data-en="Master's in Information and Communication Technologies">Magíster en
+                                    Tecnologías de la Información y la Comunicación</span>
+                            </h3>
+                            <span
+                                class="text-xs font-semibold text-lime-400 px-3 py-1 rounded-full bg-lime-400/10 whitespace-nowrap"
+                                data-es="En Curso" data-en="Ongoing">En Curso</span>
+                        </div>
+                        <p class="text-lime-400 mb-2">
+                            <span data-es="Facultad Politécnica - UNA · Cohorte 2022"
+                                data-en="Polytechnic Faculty - UNA · Cohort 2022">Facultad Politécnica - UNA · Cohorte
+                                2022</span>
+                        </p>
+                        <p class="text-white/70 text-sm"
+                            data-es="Énfasis en Ingeniería de Software y Seguridad de la Información · Elaborando tesis"
+                            data-en="Emphasis on Software Engineering and Information Security · Working on thesis">
+                            Énfasis en Ingeniería de Software y Seguridad de la Información · Elaborando tesis
+                        </p>
+                    </div>
+
+                    <div class="border-2 border-lime-400/30 rounded-2xl p-6 bg-zinc-900/30">
+                        <div class="flex items-start justify-between gap-4 mb-3">
+                            <h3 class="text-xl font-semibold">
+                                <span data-es="Diplomado en Procesamiento de Lenguaje Natural e IA"
+                                    data-en="Diploma in Natural Language Processing and AI">Diplomado en Procesamiento
+                                    de Lenguaje Natural e IA</span>
+                            </h3>
+                            <span
+                                class="text-xs font-semibold text-lime-400 px-3 py-1 rounded-full bg-lime-400/10 whitespace-nowrap"
+                                data-es="En Curso" data-en="Ongoing">En Curso</span>
+                        </div>
+                        <p class="text-lime-400 mb-2">
+                            <span data-es="Facultad Politécnica - UNA · Finaliza noviembre 2025"
+                                data-en="Polytechnic Faculty - UNA · Completion November 2025">Facultad Politécnica -
+                                UNA · Finaliza noviembre 2025</span>
+                        </p>
+                    </div>
+
+                    <!-- Completed Degree -->
+                    <div class="border border-white/10 rounded-2xl p-6 bg-zinc-900/30">
+                        <h3 class="text-xl font-semibold mb-2">
+                            <span data-es="Licenciado en Análisis de Sistemas Informáticos"
+                                data-en="Bachelor's Degree in Computer Systems Analysis">Licenciado en Análisis de
+                                Sistemas Informáticos</span>
+                        </h3>
+                        <p class="text-lime-400">
+                            <span data-es="Facultad Politécnica - UNA · 2006"
+                                data-en="Polytechnic Faculty - UNA · 2006">Facultad Politécnica - UNA · 2006</span>
+                        </p>
+                    </div>
+
+                    <!-- ALL 21 Courses/Certifications (Reordered: SE, AI, QC, Others) -->
+                    <div class="mt-12">
+                        <h3 class="text-2xl font-semibold mb-6">
+                            <span data-es="Cursos y Certificaciones (21)" data-en="Courses & Certifications (21)">Cursos
+                                y Certificaciones (21)</span>
+                        </h3>
+
+                        <div class="space-y-6">
+                            <!-- 1. Software Engineering -->
+                            <div class="border border-white/10 rounded-2xl p-6 bg-zinc-900/30">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <h4 class="text-lg font-semibold">
+                                        <span data-es="Ingeniería de Software (7)"
+                                            data-en="Software Engineering (7)">Ingeniería de Software (7)</span>
+                                    </h4>
+                                </div>
+                                <div class="space-y-3 text-sm">
+                                    <div class="border-l-2 border-blue-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Ingeniería de Requisitos"
+                                                data-en="Requirements Engineering">Ingeniería de Requisitos</span>
+                                        </p>
+                                        <p class="text-white/60">MTIC FPUNA · 20h · May 2024</p>
+                                    </div>
+                                    <div class="border-l-2 border-blue-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Gobierno de las TICs" data-en="IT Governance">Gobierno de las
+                                                TICs</span>
+                                        </p>
+                                        <p class="text-white/60">MTIC FPUNA · 20h · Feb 2024</p>
+                                    </div>
+                                    <div class="border-l-2 border-blue-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Modelado de Procesos de Negocio"
+                                                data-en="Business Process Modeling">Modelado de Procesos de
+                                                Negocio</span>
+                                        </p>
+                                        <p class="text-white/60">MTIC FPUNA · 40h · Ago 2023</p>
+                                    </div>
+                                    <div class="border-l-2 border-blue-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Ingeniería de Software con Modelos"
+                                                data-en="Model-Driven Software Engineering">Ingeniería de Software con
+                                                Modelos</span>
+                                        </p>
+                                        <p class="text-white/60">MTIC FPUNA · 20h · Dic 2022</p>
+                                    </div>
+                                    <div class="border-l-2 border-blue-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Calidad y Métricas de Software"
+                                                data-en="Software Quality and Metrics">Calidad y Métricas de
+                                                Software</span>
+                                        </p>
+                                        <p class="text-white/60">MTIC FPUNA · 25h · Dic 2022</p>
+                                    </div>
+                                    <div class="border-l-2 border-blue-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Gestión Ágil de Proyectos"
+                                                data-en="Agile Project Management">Gestión Ágil de Proyectos</span>
+                                        </p>
+                                        <p class="text-white/60">MTIC FPUNA · 40h · Dic 2022</p>
+                                    </div>
+                                    <div class="border-l-2 border-blue-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Bases de Datos Avanzadas" data-en="Advanced Databases">Bases
+                                                de Datos Avanzadas</span>
+                                        </p>
+                                        <p class="text-white/60">MTIC FPUNA · 25h · Oct 2022</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 2. AI & Advanced Topics -->
+                            <div class="border border-white/10 rounded-2xl p-6 bg-zinc-900/30">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <h4 class="text-lg font-semibold">
+                                        <span data-es="IA & Tópicos Avanzados (2)" data-en="AI & Advanced Topics (2)">IA
+                                            & Tópicos Avanzados (2)</span>
+                                    </h4>
+                                </div>
+                                <div class="space-y-3 text-sm">
+                                    <div class="border-l-2 border-lime-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Extracción Automática de Conocimiento"
+                                                data-en="Automatic Knowledge Extraction">Extracción Automática de
+                                                Conocimiento</span>
+                                        </p>
+                                        <p class="text-white/60">MTIC FPUNA · 40h · Dic 2023</p>
+                                    </div>
+                                    <div class="border-l-2 border-lime-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Tópicos de Algoritmos Avanzados"
+                                                data-en="Advanced Algorithms Topics">Tópicos de Algoritmos
+                                                Avanzados</span>
+                                        </p>
+                                        <p class="text-white/60">MTIC FPUNA · 30h · Jul 2024</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 3. Quantum Computing -->
+                            <div class="border-2 border-purple-400/30 rounded-2xl p-6 bg-zinc-900/30">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <h4 class="text-lg font-semibold">
+                                        <span data-es="Computación Cuántica (2)"
+                                            data-en="Quantum Computing (2)">Computación Cuántica (2)</span>
+                                    </h4>
+                                </div>
+                                <div class="space-y-3 text-sm">
+                                    <div class="border-l-2 border-purple-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Algoritmos cuánticos basados en grafos"
+                                                data-en="Graph-based Quantum Algorithms">Algoritmos cuánticos basados en
+                                                grafos</span>
+                                        </p>
+                                        <p class="text-white/60">CONACYT & UAA · 12h · Nov 2025</p>
+                                    </div>
+                                    <div class="border-l-2 border-purple-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">Quantum Hackathon LATAM 2025</p>
+                                        <p class="text-white/60">
+                                            <span data-es="Universidad de Montevideo · 3 días · Oct 2025"
+                                                data-en="University of Montevideo · 3 days · Oct 2025">Universidad de
+                                                Montevideo · 3 días · Oct 2025</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 4. Security -->
+                            <div class="border border-white/10 rounded-2xl p-6 bg-zinc-900/30">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <h4 class="text-lg font-semibold">
+                                        <span data-es="Seguridad de la Información (5)"
+                                            data-en="Information Security (5)">Seguridad de la Información (5)</span>
+                                    </h4>
+                                </div>
+                                <div class="space-y-3 text-sm">
+                                    <div class="border-l-2 border-red-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Protocolos de Seguridad en Redes, IPS/IDS y Firewalls"
+                                                data-en="Network Security Protocols, IPS/IDS and Firewalls">Protocolos
+                                                de Seguridad en Redes, IPS/IDS y Firewalls</span>
+                                        </p>
+                                        <p class="text-white/60">MTIC FPUNA · 40h · Feb 2024</p>
+                                    </div>
+                                    <div class="border-l-2 border-red-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Aspectos Legales en la Seguridad de la Información"
+                                                data-en="Legal Aspects in Information Security">Aspectos Legales en la
+                                                Seguridad de la Información</span>
+                                        </p>
+                                        <p class="text-white/60">MTIC FPUNA · 20h · Oct 2023</p>
+                                    </div>
+                                    <div class="border-l-2 border-red-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Arquitecturas y Gestión de Seguridad"
+                                                data-en="Security Architectures and Management">Arquitecturas y Gestión
+                                                de Seguridad</span>
+                                        </p>
+                                        <p class="text-white/60">MTIC FPUNA · 40h · Jul 2023</p>
+                                    </div>
+                                    <div class="border-l-2 border-red-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Seguridad en Aplicaciones de Software y Bases de Datos"
+                                                data-en="Security in Software Applications and Databases">Seguridad en
+                                                Aplicaciones de Software y Bases de Datos</span>
+                                        </p>
+                                        <p class="text-white/60">MTIC FPUNA · 40h · May 2023</p>
+                                    </div>
+                                    <div class="border-l-2 border-red-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Tópicos Avanzados de Criptografía"
+                                                data-en="Advanced Cryptography Topics">Tópicos Avanzados de
+                                                Criptografía</span>
+                                        </p>
+                                        <p class="text-white/60">MTIC FPUNA · 30h · Abr 2023</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 5. Statistics & Research -->
+                            <div class="border border-white/10 rounded-2xl p-6 bg-zinc-900/30">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <h4 class="text-lg font-semibold">
+                                        <span data-es="Estadística e Investigación (2)"
+                                            data-en="Statistics & Research (2)">Estadística e Investigación (2)</span>
+                                    </h4>
+                                </div>
+                                <div class="space-y-3 text-sm">
+                                    <div class="border-l-2 border-green-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Tópicos de Estadística Orientadas a la Investigación"
+                                                data-en="Research-Oriented Statistics Topics">Tópicos de Estadística
+                                                Orientadas a la Investigación</span>
+                                        </p>
+                                        <p class="text-white/60">MTIC FPUNA · 40h · Abr 2023</p>
+                                    </div>
+                                    <div class="border-l-2 border-green-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Metodología de la Investigación Científica"
+                                                data-en="Scientific Research Methodology">Metodología de la
+                                                Investigación Científica</span>
+                                        </p>
+                                        <p class="text-white/60">MTIC FPUNA · 30h · Nov 2022</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 6. Teaching -->
+                            <div class="border border-white/10 rounded-2xl p-6 bg-zinc-900/30">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <h4 class="text-lg font-semibold">
+                                        <span data-es="Docencia (2)" data-en="Teaching (2)">Docencia (2)</span>
+                                    </h4>
+                                </div>
+                                <div class="space-y-3 text-sm">
+                                    <div class="border-l-2 border-yellow-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Didáctica de la Educación Superior"
+                                                data-en="Higher Education Didactics">Didáctica de la Educación
+                                                Superior</span>
+                                        </p>
+                                        <p class="text-white/60"><span data-es="Facultad Politécnica" data-en="Polytechnic Faculty">Facultad Politécnica</span> · 110h · Sep 2022</p>
+                                    </div>
+                                    <div class="border-l-2 border-yellow-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Taller de Escritura Técnica"
+                                                data-en="Technical Writing Workshop">Taller de Escritura Técnica</span>
+                                        </p>
+                                        <p class="text-white/60">MTIC FPUNA · 20h · Feb 2024</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 7. Project Management -->
+                            <div class="border border-white/10 rounded-2xl p-6 bg-zinc-900/30">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <h4 class="text-lg font-semibold">
+                                        <span data-es="Gestión de Proyectos (1)"
+                                            data-en="Project Management (1)">Gestión de Proyectos (1)</span>
+                                    </h4>
+                                </div>
+                                <div class="space-y-3 text-sm">
+                                    <div class="border-l-2 border-orange-400/50 pl-4">
+                                        <p class="text-white/90 font-medium">
+                                            <span data-es="Preparación para la Certificación PMP/CAPM"
+                                                data-en="PMP/CAPM Certification Preparation">Preparación para la
+                                                Certificación PMP/CAPM</span>
+                                        </p>
+                                        <p class="text-white/60">PMC College & Consulting · 72h · Sep 2016</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Publications -->
+                    <div class="mt-12">
+                        <h3 class="text-2xl font-semibold mb-6">
+                            <span data-es="Publicaciones Científicas" data-en="Scientific Publications">Publicaciones
+                                Científicas</span>
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div class="border border-white/10 rounded-2xl p-6 bg-zinc-900/30">
+                                <p class="text-lg font-medium text-white/90 mb-2"
+                                    data-es="Transformación de la Asistencia en Entidades Gubernamentales a través de NLP Preentrenado"
+                                    data-en="Transformation of Assistance in Government Entities through Pre-trained NLP">
+                                    Transformación de la Asistencia en Entidades Gubernamentales a través de NLP
+                                    Preentrenado
+                                </p>
+                                <p class="text-white/60 text-sm italic">CACIC 2024, pp. 1441-1445 · Argentina · 2024</p>
+                            </div>
+
+                            <div class="border border-white/10 rounded-2xl p-6 bg-zinc-900/30">
+                                <p class="text-lg font-medium text-white/90 mb-2"
+                                    data-es="Modelos de Lenguaje Inclusivos para el Reconocimiento de Entidades Nombradas en Español, Guaraní y Jopara"
+                                    data-en="Inclusive Language Models for Named Entity Recognition in Spanish, Guaraní and Jopara">
+                                    Modelos de Lenguaje Inclusivos para el Reconocimiento de Entidades Nombradas en
+                                    Español, Guaraní y Jopara
+                                </p>
+                                <p class="text-white/60 text-sm italic">
+                                    <span data-es="IX Encuentro de Investigadores SCP · Paraguay · 2024"
+                                        data-en="IX Meeting of Researchers SCP · Paraguay · 2024">IX Encuentro de
+                                        Investigadores SCP · Paraguay · 2024</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-24 bg-zinc-950">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h2 class="text-4xl font-semibold mb-6">
+                        <span data-es="¿Trabajemos juntos?" data-en="Let's Work Together?">¿Trabajemos juntos?</span>
+                    </h2>
+                    <p class="text-xl text-white/70 mb-12"
+                        data-es="Si te interesa conversar sobre oportunidades de colaboración, roles remotos o proyectos específicos en .NET, Angular, IA o computación cuántica, podés contactarme:"
+                        data-en="If you're interested in discussing collaboration opportunities, remote roles, or specific projects in .NET, Angular, AI, or quantum computing, you can contact me:">
+                        Si te interesa conversar sobre oportunidades de colaboración, roles remotos o proyectos
+                        específicos en .NET, Angular, IA o computación cuántica, podés contactarme:
+                    </p>
+
+                    <div class="grid md:grid-cols-3 gap-8 mb-12">
+                        <div
+                            class="bg-zinc-900/50 border border-white/10 rounded-2xl p-6 hover:border-lime-400/50 transition-all">
+                            <div class="text-sm text-white/60 mb-2">Email</div>
+                            <a href="mailto:ggaleano.py@gmail.com"
+                                class="text-lime-400 hover:text-lime-300 transition-colors break-all">
+                                ggaleano.py@gmail.com
+                            </a>
+                        </div>
+
+                        <div
+                            class="bg-zinc-900/50 border border-white/10 rounded-2xl p-6 hover:border-lime-400/50 transition-all">
+                            <div class="text-sm text-white/60 mb-2">LinkedIn</div>
+                            <a href="https://www.linkedin.com/in/ggaleanopy/" target="_blank" rel="noopener noreferrer"
+                                class="text-lime-400 hover:text-lime-300 transition-colors">
+                                /in/ggaleanopy
+                            </a>
+                        </div>
+
+                        <div
+                            class="bg-zinc-900/50 border border-white/10 rounded-2xl p-6 hover:border-lime-400/50 transition-all">
+                            <div class="text-sm text-white/60 mb-2">
+                                <span data-es="Ubicación" data-en="Location">Ubicación</span>
+                            </div>
+                            <div class="text-lime-400">
+                                <span data-es="Asunción, Paraguay" data-en="Asunción, Paraguay">Asunción,
+                                    Paraguay</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="mailto:ggaleano.py@gmail.com"
+                        class="btn-primary inline-flex items-center gap-2 px-8 py-4 bg-lime-500 text-black font-semibold rounded-full text-lg no-print">
+                        <span data-es="Enviar Mensaje" data-en="Send Message">Enviar Mensaje</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-8 bg-black border-t border-white/10">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center text-white/60 text-sm">
+                <p data-es="© 2025 Gustavo Adolfo Galeano Duarte · Todos los derechos reservados"
+                    data-en="© 2025 Gustavo Adolfo Galeano Duarte · All rights reserved">
+                    © 2025 Gustavo Adolfo Galeano Duarte · Todos los derechos reservados
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- PRINT LAYOUT (Hidden on web) -->
+    <div class="print-layout hidden">
+        <!-- Sidebar -->
+        <div class="print-sidebar" style="padding: 1rem !important;">
+            <div class="flex flex-col items-center mb-3">
+                <img src="img/ggaleano.png" alt="Gustavo Galeano"
+                    class="w-24 h-24 rounded-full object-cover border-4 border-white/20 mb-2">
+            </div>
+
+            <div class="mb-3">
+                <h3 data-es="Contacto" data-en="Contact"
+                    style="margin-bottom: 0.3rem !important; font-size: 0.9rem !important;">Contacto</h3>
+                <div class="text-xs space-y-1.5 text-gray-300">
+                    <p>ggaleano.py@gmail.com</p>
+                    <p>Asunción, Paraguay</p>
+                    <p>linkedin.com/in/ggaleanopy</p>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <h3 data-es="Educación" data-en="Education"
+                    style="margin-bottom: 0.3rem !important; font-size: 0.9rem !important;">Educación</h3>
+                <div class="space-y-3 text-xs">
+                    <div>
+                        <p class="font-bold text-white" data-es="Magíster en TIC" data-en="Master's in ICT">Magíster en TIC</p>
+                        <p class="text-gray-400 text-[10px]" data-es="Facultad Politécnica UNA (En curso)" data-en="Polytechnic Faculty UNA (In progress)">Facultad Politécnica UNA (En curso)</p>
+                    </div>
+                    <div>
+                        <p class="font-bold text-white" data-es="Diplomado en NLP & IA" data-en="Diploma in NLP & AI">Diplomado en NLP & IA</p>
+                        <p class="text-gray-400 text-[10px]" data-es="Facultad Politécnica UNA (2025)" data-en="Polytechnic Faculty UNA (2025)">Facultad Politécnica UNA (2025)</p>
+                    </div>
+                    <div>
+                        <p class="font-bold text-white" data-es="Lic. Análisis de Sistemas" data-en="B.Sc. Systems Analysis">Lic. Análisis de Sistemas</p>
+                        <p class="text-gray-400 text-[10px]" data-es="Facultad Politécnica UNA (2006)" data-en="Polytechnic Faculty UNA (2006)">Facultad Politécnica UNA (2006)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <h3 data-es="Idiomas" data-en="Languages"
+                    style="margin-bottom: 0.3rem !important; font-size: 0.9rem !important;">Idiomas</h3>
+                <div class="space-y-1.5 text-xs text-gray-300">
+                    <div>
+                        <p class="font-bold text-white" data-es="Español" data-en="Spanish">Español</p>
+                        <p class="text-[10px] text-gray-400" data-es="Nativo" data-en="Native">Nativo</p>
+                    </div>
+                    <div>
+                        <p class="font-bold text-white" data-es="Inglés" data-en="English">Inglés</p>
+                        <p class="text-[10px] text-gray-400">B2+</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-2">
+                <h3 data-es="Habilidades" data-en="Skills"
+                    style="margin-bottom: 0.3rem !important; font-size: 0.9rem !important;">Habilidades</h3>
+                <div class="space-y-1.5 text-xs">
+                    <div>
+                        <p class="font-bold text-lime-400 mb-0.5">Software Engineering</p>
+                        <ul class="list-disc list-inside text-gray-300 text-[10px] space-y-0">
+                            <li>Angular / TypeScript / JavaScript</li>
+                            <li>.NET / C# / ASP.NET</li>
+                            <li>Python / FastAPI</li>
+                            <li>Node.js</li>
+                            <li>REST APIs</li>
+                            <li>SQL Server / EF</li>
+                            <li data-es="PostgreSQL / MySQL / MongoDB /" data-en="PostgreSQL / MySQL / MongoDB /">PostgreSQL / MySQL / MongoDB /</li>
+                            <li style="padding-left: 0.75rem; list-style: none;" data-es="Oracle" data-en="Oracle">Oracle</li>
+                            <li data-es="Arquitectura de Software" data-en="Software Architecture">Arquitectura de Software</li>
+                            <li data-es="Frontend & Backend" data-en="Frontend & Backend">Frontend & Backend</li>
+                            <li data-es="Bases de Datos Relacionales" data-en="Relational Databases">Bases de Datos Relacionales</li>
+                            <li data-es="Liderazgo de Equipos" data-en="Team Leadership">Liderazgo de Equipos</li>
+                            <li data-es="Desarrollo Móvil" data-en="Mobile Development">Desarrollo Móvil</li>
+                            <li data-es="Blockchain" data-en="Blockchain">Blockchain</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="font-bold text-lime-400 mb-0.5">AI & Machine Learning</p>
+                        <ul class="list-disc list-inside text-gray-300 text-[10px] space-y-0">
+                            <li>NLP & Transformers</li>
+                            <li>Meta-Embeddings</li>
+                            <li>Text Classification</li>
+                            <li data-es="Agentes Conversacionales" data-en="Conversational Agents">Agentes Conversacionales</li>
+                            <li data-es="Clasificación de Sonido" data-en="Sound Classification">Clasificación de Sonido</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="font-bold text-lime-400 mb-0.5">Quantum Computing</p>
+                        <ul class="list-disc list-inside text-gray-300 text-[10px] space-y-0">
+                            <li>Qiskit Framework</li>
+                            <li>Quantum Algorithms</li>
+                            <li>NISQ Systems</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="print-main" style="padding: 1rem 1.5rem !important;">
+            <div class="mb-2">
+                <h1 class="text-2xl font-bold text-slate-800 uppercase tracking-wide leading-tight">Gustavo Galeano</h1>
+                <p class="text-lg text-slate-600 mt-1 font-light uppercase tracking-widest"
+                    data-es="Desarrollador de Software | Especialista en IA | Investigador" data-en="Software Developer | AI Specialist | Researcher">
+                    Desarrollador de Software | Especialista en IA | Investigador
+                </p>
+            </div>
+
+            <div class="mb-3">
+                <p class="text-xs text-slate-600 leading-snug text-justify">
+                    <span
+                        data-es="Profesional con más de 21 años de experiencia en desarrollo de software, especializado en Inteligencia Artificial, NLP y Computación Cuántica. He liderado proyectos complejos en gestión académica, propiedad intelectual y sistemas de navegación. Actualmente enfocado en desarrollo de software e IA, con fuerte interés en investigación aplicada y algoritmos cuánticos."
+                        data-en="Professional with over 21 years of experience in software development, specialized in Artificial Intelligence, NLP, and Quantum Computing. I have led complex projects in academic management, intellectual property, and navigation systems. Currently focused on software development and AI, with strong interest in applied research and quantum algorithms.">
+                        Profesional con más de 21 años de experiencia en desarrollo de software, especializado en
+                        Inteligencia Artificial, NLP y Computación Cuántica. He liderado proyectos complejos en gestión
+                        académica, propiedad intelectual y sistemas de navegación. Actualmente enfocado en desarrollo de software e IA, con fuerte interés en investigación aplicada y algoritmos cuánticos.
+                    </span>
+                </p>
+            </div>
+
+            <div class="mb-3">
+                <h3 data-es="Experiencia" data-en="Experience"
+                    style="margin-bottom: 0.4rem !important; font-size: 1rem !important;">Experiencia</h3>
+
+                <div class="print-timeline-item" style="margin-bottom: 0.5rem !important;">
+                    <div class="print-timeline-dot"></div>
+                    <div class="flex justify-between items-baseline mb-0.5">
+                        <h4 class="font-bold text-slate-800 text-sm" data-es="Consultor/Analista/Desarrollador" data-en="Consultant/Analyst/Developer">Consultor/Analista/Desarrollador</h4>
+                        <span class="text-[10px] text-slate-500" data-es="2010 - Presente" data-en="2010 - Present">2010 - Presente</span>
+                    </div>
+                    <p class="text-xs text-slate-600 font-semibold mb-1">Berkemeyer Attorneys and Counselors</p>
+                    <p class="text-[10px] text-slate-500 text-justify leading-snug" data-es="Liderazgo de equipo de desarrollo, mantenimiento de sistemas críticos y consultoría tecnológica externa." data-en="Development team leadership, critical systems maintenance, and external technology consulting.">
+                        Liderazgo de equipo de desarrollo, mantenimiento de sistemas críticos y consultoría tecnológica
+                        externa.
+                    </p>
+                </div>
+
+                <div class="print-timeline-item" style="margin-bottom: 0.5rem !important;">
+                    <div class="print-timeline-dot"></div>
+                    <div class="flex justify-between items-baseline mb-0.5">
+                        <h4 class="font-bold text-slate-800 text-sm" data-es="Consultor/Analista/Desarrollador" data-en="Consultant/Analyst/Developer">Consultor/Analista/Desarrollador</h4>
+                        <span class="text-[10px] text-slate-500" data-es="2015 - Presente" data-en="2015 - Present">2015 - Presente</span>
+                    </div>
+                    <p class="text-xs text-slate-600 font-semibold mb-1" data-es="Hidrovías del Paraguay S.A." data-en="Hidrovías del Paraguay S.A.">Hidrovías del Paraguay S.A.</p>
+                    <p class="text-[10px] text-slate-500 text-justify leading-snug" data-es="Desarrollo de sistemas de navegación, integración GPS y comunicación satelital." data-en="Navigation systems development, GPS integration, and satellite communication.">
+                        Desarrollo de sistemas de navegación, integración GPS y comunicación satelital.
+                    </p>
+                </div>
+
+                <div class="print-timeline-item" style="margin-bottom: 0.5rem !important;">
+                    <div class="print-timeline-dot"></div>
+                    <div class="flex justify-between items-baseline mb-0.5">
+                        <h4 class="font-bold text-slate-800 text-sm" data-es="Especialista IA & Investigador" data-en="AI Specialist & Researcher">Especialista IA & Investigador</h4>
+                        <span class="text-[10px] text-slate-500" data-es="2023 - Presente" data-en="2023 - Present">2023 - Presente</span>
+                    </div>
+                    <p class="text-xs text-slate-600 font-semibold mb-1" data-es="Facultad Politécnica UNA - Proyectos ANDE/ECEME" data-en="Polytechnic Faculty UNA - ANDE/ECEME Projects">Facultad Politécnica UNA - Proyectos ANDE/ECEME</p>
+                    <p class="text-[10px] text-slate-500 text-justify leading-snug" data-es="Investigación aplicada en IA, NLP y Computación Cuántica. Portal institucional basado en IA y simulación de estrategias. Publicaciones en CACIC 2024 y conferencias nacionales." data-en="Applied research in AI, NLP, and Quantum Computing. AI-based institutional portal and strategy simulation. Publications at CACIC 2024 and national conferences.">
+                        Investigación aplicada en IA, NLP y Computación Cuántica. Portal institucional basado en IA y simulación de estrategias. Publicaciones en CACIC 2024 y conferencias nacionales.
+                    </p>
+                </div>
+
+                <div class="print-timeline-item" style="margin-bottom: 0.5rem !important;">
+                    <div class="print-timeline-dot"></div>
+                    <div class="flex justify-between items-baseline mb-0.5">
+                        <h4 class="font-bold text-slate-800 text-sm" data-es="Jefe del Departamento de Informática" data-en="Head of IT Department">Jefe del Departamento de Informática</h4>
+                        <span class="text-[10px] text-slate-500" data-es="5 años" data-en="5 years">5 años</span>
+                    </div>
+                    <p class="text-xs text-slate-600 font-semibold mb-1">Berkemeyer Attorneys and Counselors</p>
+                    <p class="text-[10px] text-slate-500 text-justify leading-snug" data-es="Gestión y administración de sistemas empresariales y administrativos. Coordinación, distribución, asignación y seguimiento de tareas del personal." data-en="Management and administration of business and administrative systems. Coordination, distribution, assignment and monitoring of staff tasks.">
+                        Gestión y administración de sistemas empresariales y administrativos. Coordinación, distribución, asignación y seguimiento de tareas del personal.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <h3 data-es="Certificaciones" data-en="Certifications"
+                    style="margin-bottom: 0.5rem !important; font-size: 1.05rem !important;">Certificaciones</h3>
+                <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-[9px] text-slate-600">
+                    <!-- Software Engineering -->
+                    <div class="font-bold text-slate-800 col-span-2 mt-0.5 border-b border-slate-200 pb-0.5 mb-0.5">
+                        Software Engineering</div>
+                    <div data-es="• Ingeniería de Requisitos (20h)" data-en="• Requirements Engineering (20h)">• Ingeniería de Requisitos (20h)</div>
+                    <div data-es="• Gobierno de las TICs (20h)" data-en="• ICT Governance (20h)">• Gobierno de las TICs (20h)</div>
+                    <div data-es="• Modelado de Procesos (40h)" data-en="• Process Modeling (40h)">• Modelado de Procesos (40h)</div>
+                    <div data-es="• Ing. Software con Modelos (20h)" data-en="• Model-Driven Software Eng. (20h)">• Ing. Software con Modelos (20h)</div>
+                    <div data-es="• Calidad y Métricas (25h)" data-en="• Quality & Metrics (25h)">• Calidad y Métricas (25h)</div>
+                    <div data-es="• Gestión Ágil de Proyectos (40h)" data-en="• Agile Project Management (40h)">• Gestión Ágil de Proyectos (40h)</div>
+                    <div data-es="• Bases de Datos Avanzadas (25h)" data-en="• Advanced Databases (25h)">• Bases de Datos Avanzadas (25h)</div>
+
+                    <!-- AI & Machine Learning -->
+                    <div class="font-bold text-slate-800 col-span-2 mt-1.5 border-b border-slate-200 pb-0.5 mb-0.5">AI &
+                        Machine Learning</div>
+                    <div data-es="• Extracción de Conocimiento (40h)" data-en="• Knowledge Extraction (40h)">• Extracción de Conocimiento (40h)</div>
+                    <div data-es="• Tópicos Algoritmos Avanzados (30h)" data-en="• Advanced Algorithms Topics (30h)">• Tópicos Algoritmos Avanzados (30h)</div>
+
+                    <!-- Quantum Computing -->
+                    <div class="font-bold text-slate-800 col-span-2 mt-1.5 border-b border-slate-200 pb-0.5 mb-0.5">
+                        Quantum Computing</div>
+                    <div data-es="• Algoritmos Cuánticos (12h)" data-en="• Quantum Algorithms (12h)">• Algoritmos Cuánticos (12h)</div>
+                    <div>• Quantum Hackathon 2025</div>
+
+                    <!-- Security & Others -->
+                    <div class="font-bold text-slate-800 col-span-2 mt-1.5 border-b border-slate-200 pb-0.5 mb-0.5" data-es="Seguridad & Otros" data-en="Security & Others">
+                        Seguridad & Otros</div>
+                    <div data-es="• Seguridad en Redes (40h)" data-en="• Network Security (40h)">• Seguridad en Redes (40h)</div>
+                    <div data-es="• Criptografía Avanzada (30h)" data-en="• Advanced Cryptography (30h)">• Criptografía Avanzada (30h)</div>
+                    <div data-es="• Didáctica Univ. (110h)" data-en="• University Didactics (110h)">• Didáctica Univ. (110h)</div>
+                    <div>• PMP Prep (72h)</div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <h3 data-es="Publicaciones" data-en="Publications"
+                    style="margin-bottom: 0.4rem !important; font-size: 1rem !important;">Publicaciones</h3>
+                <div class="space-y-1 text-[9px] text-slate-600">
+                    <p class="font-semibold text-slate-800 leading-tight" data-es="Transformación de la Asistencia en Entidades Gubernamentales a través de NLP Preentrenado" data-en="Transformation of Assistance in Government Entities through Pre-trained NLP">Transformación de la Asistencia en Entidades Gubernamentales a través de NLP Preentrenado</p>
+                    <p class="italic mb-1.5">CACIC 2024, pp. 1441-1445 · Argentina</p>
+                    
+                    <p class="font-semibold text-slate-800 leading-tight" data-es="Modelos de Lenguaje Inclusivos para el Reconocimiento de Entidades Nombradas" data-en="Inclusive Language Models for Named Entity Recognition">Modelos de Lenguaje Inclusivos para el Reconocimiento de Entidades Nombradas</p>
+                    <p class="italic" data-es="IX Encuentro de Investigadores SCP · Paraguay 2024" data-en="IX SCP Researchers Meeting · Paraguay 2024">IX Encuentro de Investigadores SCP · Paraguay 2024</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>
