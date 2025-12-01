@@ -53,7 +53,42 @@
 
         // PDF Export function
         function exportToPDF() {
+            // Show modal
+            document.getElementById('pdfModal').classList.remove('hidden');
+            document.getElementById('pdfModal').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('pdfModal').classList.add('hidden');
+            document.getElementById('pdfModal').classList.remove('flex');
+        }
+
+        function exportResumido() {
+            closeModal();
+            // Mantener el layout actual (print-layout visible, web-layout oculto)
             window.print();
+        }
+
+        function exportExtendido() {
+            closeModal();
+            // Cambiar temporalmente para mostrar print-layout-extended
+            const printLayout = document.querySelector('.print-layout');
+            const printLayoutExtended = document.querySelector('.print-layout-extended');
+            
+            // Ocultar print-layout resumido y mostrar extendido
+            printLayout.style.display = 'none';
+            printLayoutExtended.style.display = 'grid';
+            
+            // Esperar un momento para que se apliquen los estilos
+            setTimeout(() => {
+                window.print();
+                
+                // Restaurar después de imprimir
+                setTimeout(() => {
+                    printLayout.style.display = '';
+                    printLayoutExtended.style.display = '';
+                }, 100);
+            }, 100);
         }
 
         // Smooth scroll
@@ -185,7 +220,7 @@
         /* Print styles for professional PDF */
         @media print {
             @page {
-                margin: 0;
+                margin: 15mm;
                 size: A4;
             }
 
@@ -196,7 +231,12 @@
                 print-color-adjust: exact !important;
             }
 
-            /* Hide web layout */
+            /* Ocultar modal siempre */
+            #pdfModal {
+                display: none !important;
+            }
+
+            /* Por defecto: Hide web layout, show print layout */
             .web-layout,
             .web-layout * {
                 display: none !important;
@@ -205,12 +245,102 @@
                 overflow: hidden !important;
             }
 
-            /* Show print layout */
+            /* Show print layout - Default 100% for desktop */
             .print-layout {
                 display: grid !important;
                 grid-template-columns: 32% 68%;
                 min-height: 100vh;
+                max-height: 297mm;
                 visibility: visible !important;
+            }
+
+            /* Print Layout Extended (versión con todo el contenido) */
+            .print-layout-extended {
+                display: none !important;
+            }
+
+            body:has(.print-layout-extended[style*="display: grid"]) .print-layout {
+                display: none !important;
+            }
+
+            body:has(.print-layout-extended[style*="display: grid"]) .print-layout-extended {
+                display: grid !important;
+                grid-template-columns: 32% 68%;
+                visibility: visible !important;
+            }
+
+            body:has(.print-layout-extended[style*="display: grid"]) .print-layout-extended * {
+                visibility: visible !important;
+            }
+
+            /* Page break controls for extended layout */
+            .print-layout-extended .print-sidebar {
+                background-color: #2c3e50 !important;
+                color: white !important;
+                padding: 1rem !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                page-break-after: always;
+                page-break-inside: avoid;
+                min-height: 100vh !important;
+                height: 100vh !important;
+            }
+
+            .print-layout-extended .print-main {
+                padding: 2rem 1.5rem 1rem 1.5rem !important;
+                page-break-before: always;
+                min-height: 100vh !important;
+            }
+
+            .print-layout-extended .print-main h3 {
+                page-break-after: avoid;
+                page-break-before: auto;
+            }
+
+            .print-layout-extended .print-timeline-item {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+
+            /* Allow breaks between major sections */
+            .print-layout-extended .print-main > div.mb-3 {
+                page-break-inside: auto;
+            }
+
+            /* Certifications section can break */
+            .print-layout-extended .print-main > div.mb-3:has(h3[data-es="Certificaciones & Cursos"]) {
+                page-break-inside: auto;
+            }
+
+            .print-layout-extended .print-main > div.mb-3:has(h3[data-es="Certificaciones & Cursos"]) > div {
+                page-break-inside: auto;
+            }
+
+            /* Publications can start on new page if needed */
+            .print-layout-extended .print-main > div.mb-3:has(h3[data-es="Publicaciones"]) {
+                page-break-before: auto;
+            }
+
+            .print-layout-extended .mb-3 {
+                margin-bottom: 0.8rem !important;
+            }
+
+            .print-layout-extended .print-timeline-item {
+                margin-bottom: 0.5rem !important;
+            }
+
+            /* Page configuration with numbers */
+            @page {
+                margin: 15mm 15mm 20mm 15mm;
+            }
+
+            /* Mobile-only scaling - 95% */
+            @media (max-width: 768px) {
+                .print-layout {
+                    transform: scale(0.95);
+                    transform-origin: top left;
+                    width: 105.26%;
+                }
             }
             
             .print-layout * {
@@ -339,9 +469,9 @@
                         </div>
 
                         <p class="text-base text-white/70 leading-relaxed max-w-xl"
-                            data-es="Más de 21 años de experiencia en desarrollo de software (.NET/Angular en proyectos recientes), especializado en Inteligencia Artificial, NLP, Computación Cuántica y arquitecturas multi-stack."
-                            data-en="Over 21 years of software development experience (.NET/Angular in recent projects), specialized in Artificial Intelligence, NLP, Quantum Computing and multi-stack architectures.">
-                            Más de 21 años de experiencia en desarrollo de software (.NET/Angular en proyectos recientes), especializado en Inteligencia
+                            data-es="21+ años de experiencia en desarrollo de software (.NET/Angular en proyectos recientes), especializado en Inteligencia Artificial, NLP, Computación Cuántica y arquitecturas multi-stack."
+                            data-en="21+ years of software development experience (.NET/Angular in recent projects), specialized in Artificial Intelligence, NLP, Quantum Computing and multi-stack architectures.">
+                            21+ años de experiencia en desarrollo de software (.NET/Angular en proyectos recientes), especializado en Inteligencia
                             Artificial, NLP, Computación Cuántica y arquitecturas multi-stack.
                         </p>
 
@@ -383,9 +513,9 @@
                         <span data-es="Sobre mí" data-en="About Me">Sobre mí</span>
                     </h2>
                     <div class="space-y-6 text-base text-white/70 leading-relaxed">
-                        <p data-es="Cuento con más de 20 (veinte) años de experiencia en desarrollo de sistemas de distintos ámbitos, desde sistemas de gestión académica (Acad5 – CNC, UNA), gestión de Propiedad Intelectual, hasta sistemas de navegación de embarcaciones en la Hidrovía Paraguay–Paraná."
-                            data-en="I have over 20 years of experience in systems development across various domains, from academic management systems (Acad5 – CNC, UNA), intellectual property management, to vessel navigation systems on the Paraguay-Paraná Waterway.">
-                            Cuento con más de 20 (veinte) años de experiencia en desarrollo de sistemas de distintos
+                        <p data-es="Cuento con 21+ años de experiencia en desarrollo de sistemas de distintos ámbitos, desde sistemas de gestión académica (Acad5 – CNC, UNA), gestión de Propiedad Intelectual, hasta sistemas de navegación de embarcaciones en la Hidrovía Paraguay–Paraná."
+                            data-en="I have 21+ years of experience in systems development across various domains, from academic management systems (Acad5 – CNC, UNA), intellectual property management, to vessel navigation systems on the Paraguay-Paraná Waterway.">
+                            Cuento con 21+ años de experiencia en desarrollo de sistemas de distintos
                             ámbitos, desde sistemas de gestión académica (Acad5 – CNC, UNA), gestión de Propiedad
                             Intelectual, hasta sistemas de navegación de embarcaciones en la Hidrovía Paraguay–Paraná.
                         </p>
@@ -472,8 +602,8 @@
                             <li>• Node.js</li>
                             <li>• REST APIs & <span data-es="Arquitectura" data-en="Architecture">Arquitectura</span></li>
                             <li>• SQL Server / Entity Framework</li>
-                            <li>• <span data-es="PostgreSQL / MySQL / MongoDB /" data-en="PostgreSQL / MySQL / MongoDB /">PostgreSQL / MySQL / MongoDB /</span></li>
-                            <li style="padding-left: 0.75rem; list-style: none;"><span data-es="Oracle" data-en="Oracle">Oracle</span></li>
+                            <li>• PostgreSQL / Oracle</li>
+                            <li>• MySQL / MongoDB</li>
                             <li>• <span data-es="Arquitectura de Software" data-en="Software Architecture">Arquitectura de Software</span></li>
                             <li>• <span data-es="Frontend & Backend" data-en="Frontend & Backend">Frontend & Backend</span></li>
                             <li>• <span data-es="Bases de Datos Relacionales" data-en="Relational Databases">Bases de Datos Relacionales</span></li>
@@ -548,17 +678,17 @@
                                 <span data-es="15 años" data-en="15 years">15 años</span>
                             </span>
                         </div>
-                        <ul class="space-y-2 text-white/70 mt-4">
-                            <li data-es="• Desarrollo externo de nuevos aplicativos, mantenimiento de sistemas y ampliación de funcionalidades"
-                                data-en="• External development of new applications, system maintenance and feature expansion">
-                                • Desarrollo externo de nuevos aplicativos, mantenimiento de sistemas y ampliación de
-                                funcionalidades
-                            </li>
-                            <li data-es="• Consultoría externa al Departamento de Informática"
-                                data-en="• External consulting to IT Department">
-                                • Consultoría externa al Departamento de Informática
-                            </li>
-                        </ul>
+                        <p class="text-white/70 mt-4 leading-relaxed" data-es="Bajo mi gestión como Jefe de Proyectos y fullstack dev, se desarrollaron sistemas y aplicaciones. Estas herramientas permiten la gestión completa de los procesos de seguimiento, flujos de trabajo, servicios web de toda la información de Propiedad Intelectual del bufete. Gracias a ello, la gestión de la cartera de clientes es eficiente. Cabe destacar que Berkemeyer Attorneys and Counselors maneja más del 70% del mercado de marcas en Paraguay y cuenta con clientes de todo el mundo."
+                            data-en="Under my management as Project Manager and fullstack dev, systems and applications were developed. These tools allow complete management of tracking processes, workflows, web services for all Intellectual Property information of the firm. Thanks to this, client portfolio management is efficient. It's worth noting that Berkemeyer Attorneys and Counselors handles more than 70% of the trademark market in Paraguay and has clients worldwide.">
+                            Bajo mi gestión como Jefe de Proyectos y fullstack dev, se desarrollaron sistemas y aplicaciones. Estas herramientas permiten la gestión completa de los procesos de seguimiento, flujos de trabajo, servicios web de toda la información de Propiedad Intelectual del bufete. Gracias a ello, la gestión de la cartera de clientes es eficiente. Cabe destacar que Berkemeyer Attorneys and Counselors maneja más del 70% del mercado de marcas en Paraguay y cuenta con clientes de todo el mundo.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mt-3">
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">ASP.NET</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">C#</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">Visual Basic</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">ASP</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">Microsoft SQL Server</span>
+                        </div>
                     </div>
 
                     <!-- Experience 2 -->
@@ -575,16 +705,22 @@
                                 <span data-es="10 años" data-en="10 years">10 años</span>
                             </span>
                         </div>
-                        <ul class="space-y-2 text-white/70 mt-4">
-                            <li data-es="• Desarrollo y mantenimiento de sistemas de navegación (GPS, comunicación satelital)"
-                                data-en="• Development and maintenance of navigation systems (GPS, satellite communication)">
-                                • Desarrollo y mantenimiento de sistemas de navegación (GPS, comunicación satelital)
-                            </li>
-                            <li data-es="• Desarrollo externo de nuevos aplicativos y ampliación de funcionalidades"
-                                data-en="• External development of new applications and feature expansion">
-                                • Desarrollo externo de nuevos aplicativos y ampliación de funcionalidades
-                            </li>
-                        </ul>
+                        <p class="text-white/70 mt-4 leading-relaxed" data-es="Gracias a mi trabajo en el desarrollo e implementación de HB Bootes, fue posible centralizar el monitoreo en tiempo real de toda la flota de buques de la empresa a lo largo de la Hidrovía Paraguay/Paraná, así como de la cuenca norte del río Amazonas y el mar Caribe. La suite de aplicaciones está disponible para iOS, Android y web. Usuarios de Brasil, Uruguay y Paraguay utilizan HB Bootes para obtener información online sobre rutas, consumo de combustible y una amplia variedad de datos sobre flotas gracias a la unificación de servicios como GPS, AIS, AccuWeather entre otros, que ofrece esta plataforma."
+                            data-en="Thanks to my work in the development and implementation of HB Bootes, it was possible to centralize real-time monitoring of the entire company fleet along the Paraguay/Paraná Waterway, as well as the northern Amazon River basin and the Caribbean Sea. The application suite is available for iOS, Android and web. Users from Brazil, Uruguay and Paraguay use HB Bootes to obtain online information about routes, fuel consumption and a wide variety of fleet data thanks to the unification of services such as GPS, AIS, AccuWeather among others, offered by this platform.">
+                            Gracias a mi trabajo en el desarrollo e implementación de HB Bootes, fue posible centralizar el monitoreo en tiempo real de toda la flota de buques de la empresa a lo largo de la Hidrovía Paraguay/Paraná, así como de la cuenca norte del río Amazonas y el mar Caribe. La suite de aplicaciones está disponible para iOS, Android y web. Usuarios de Brasil, Uruguay y Paraguay utilizan HB Bootes para obtener información online sobre rutas, consumo de combustible y una amplia variedad de datos sobre flotas gracias a la unificación de servicios como GPS, AIS, AccuWeather entre otros, que ofrece esta plataforma.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mt-3">
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">ASP.NET</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">C#</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">.NET Core</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">React</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">AngularJS</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">Microsoft SQL Server</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">JavaScript</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">Node.js</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">Express.js</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">MongoDB</span>
+                        </div>
                     </div>
 
                     <!-- Experience 3 -->
@@ -634,10 +770,16 @@
                                 <span data-es="2 años" data-en="2 years">2 años</span>
                             </span>
                         </div>
-                        <p class="text-white/70" data-es="Proyecto: Portal Institucional basado en IA"
-                            data-en="Project: AI-based Institutional Portal">
-                            Proyecto: Portal Institucional basado en IA
+                        <p class="text-white/70 mt-4 leading-relaxed" data-es="Como resultado de mi gestión, la ANDE ha avanzado significativamente en la implementación de tecnologías innovadoras para mejorar la experiencia del usuario y optimizar los procesos internos. En particular, se viene trabajando en la puesta en marcha de un chatbot basado en procesamiento del lenguaje natural (NLP, por sus siglas en inglés), que permite una comunicación más eficiente y personalizada con los usuarios. Además, como parte de este esfuerzo, se ha llevado a cabo una investigación exhaustiva que está dando como resultado en la creación de artículos científicos. Estos trabajos están siendo presentados en reconocidas conferencias internacionales."
+                            data-en="As a result of my management, ANDE has advanced significantly in implementing innovative technologies to improve user experience and optimize internal processes. In particular, work is being done on implementing a chatbot based on natural language processing (NLP), which allows more efficient and personalized communication with users. Additionally, as part of this effort, exhaustive research has been conducted that is resulting in the creation of scientific articles. These works are being presented at recognized international conferences.">
+                            Como resultado de mi gestión, la ANDE ha avanzado significativamente en la implementación de tecnologías innovadoras para mejorar la experiencia del usuario y optimizar los procesos internos. En particular, se viene trabajando en la puesta en marcha de un chatbot basado en procesamiento del lenguaje natural (NLP, por sus siglas en inglés), que permite una comunicación más eficiente y personalizada con los usuarios. Además, como parte de este esfuerzo, se ha llevado a cabo una investigación exhaustiva que está dando como resultado en la creación de artículos científicos. Estos trabajos están siendo presentados en reconocidas conferencias internacionales.
                         </p>
+                        <div class="flex flex-wrap gap-2 mt-3">
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">Python</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">Tensorflow</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">Pytorch</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">MongoDB</span>
+                        </div>
                     </div>
 
                     <div class="border-l-2 border-lime-400 pl-8">
@@ -657,10 +799,43 @@
                                 <span data-es="0.5 años" data-en="0.5 years">0.5 años</span>
                             </span>
                         </div>
-                        <p class="text-white/70" data-es="Proyecto: Simulación de Estrategias de Batalla"
-                            data-en="Project: Battle Strategy Simulation">
-                            Proyecto: Simulación de Estrategias de Batalla
+                        <p class="text-white/70 mt-4 leading-relaxed" data-es="Como consecuencia de mi labor en el proyecto de I+D+I Aplicada a la Gestión de Simulación de Estrategias de Batalla para el Ejército Paraguayo, se logró definir la arquitectura del sistema de simulación, estableciendo los requisitos técnicos clave para su desarrollo. A partir de mi aporte, se analizaron y compararon motores de simulación, modelos de terreno y clima, e integración de inteligencia artificial para maximizar el realismo y la eficiencia del sistema. Como fruto de mis tareas, se diseñó una infraestructura tecnológica optimizada, asegurando la escalabilidad y adaptabilidad del simulador a las necesidades estratégicas del Ejército."
+                            data-en="As a consequence of my work on the R&D&I project Applied to Battle Strategy Simulation Management for the Paraguayan Army, the simulation system architecture was defined, establishing key technical requirements for its development. Based on my contribution, simulation engines, terrain and climate models, and artificial intelligence integration were analyzed and compared to maximize system realism and efficiency. As a result of my tasks, an optimized technological infrastructure was designed, ensuring the simulator's scalability and adaptability to the Army's strategic needs.">
+                            Como consecuencia de mi labor en el proyecto de I+D+I Aplicada a la Gestión de Simulación de Estrategias de Batalla para el Ejército Paraguayo, se logró definir la arquitectura del sistema de simulación, estableciendo los requisitos técnicos clave para su desarrollo. A partir de mi aporte, se analizaron y compararon motores de simulación, modelos de terreno y clima, e integración de inteligencia artificial para maximizar el realismo y la eficiencia del sistema. Como fruto de mis tareas, se diseñó una infraestructura tecnológica optimizada, asegurando la escalabilidad y adaptabilidad del simulador a las necesidades estratégicas del Ejército.
                         </p>
+                        <div class="flex flex-wrap gap-2 mt-3">
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">Java</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">MASON</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">GeoTools</span>
+                        </div>
+                    </div>
+
+                    <!-- Profesor Programación -->
+                    <div class="border-l-2 border-white/20 pl-8">
+                        <div class="flex flex-wrap justify-between items-start gap-4 mb-2">
+                            <div>
+                                <h3 class="text-xl font-semibold">
+                                    <span data-es="Profesor de Programación, Algorítmica y Estructuras de Datos"
+                                        data-en="Professor of Programming, Algorithms and Data Structures">Profesor de Programación, Algorítmica y Estructuras de Datos</span>
+                                </h3>
+                                <p class="text-lime-400 mt-1">
+                                    <span data-es="Facultad Politécnica - UNA"
+                                        data-en="Polytechnic Faculty - UNA">Facultad Politécnica - UNA</span>
+                                </p>
+                            </div>
+                            <span class="text-white/60 text-sm">
+                                <span data-es="2022 - Presente" data-en="2022 - Present">2022 - Presente</span>
+                            </span>
+                        </div>
+                        <p class="text-white/70 mt-4 leading-relaxed" data-es="Encargado de Cátedra y Auxiliar de Enseñanza en Carreras Informáticas"
+                            data-en="Course Coordinator and Teaching Assistant in Computer Science Programs">
+                            Encargado de Cátedra y Auxiliar de Enseñanza en Carreras Informáticas
+                        </p>
+                        <div class="flex flex-wrap gap-2 mt-3">
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">Java</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">C</span>
+                            <span class="px-3 py-1 bg-lime-500/10 text-lime-400 rounded-full text-xs font-medium">C++</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1037,35 +1212,23 @@
                         específicos en .NET, Angular, IA o computación cuántica, podés contactarme:
                     </p>
 
-                    <div class="grid md:grid-cols-3 gap-8 mb-12">
-                        <div
-                            class="bg-zinc-900/50 border border-white/10 rounded-2xl p-6 hover:border-lime-400/50 transition-all">
-                            <div class="text-sm text-white/60 mb-2">Email</div>
-                            <a href="mailto:ggaleano.py@gmail.com"
-                                class="text-lime-400 hover:text-lime-300 transition-colors break-all">
-                                ggaleano.py@gmail.com
-                            </a>
-                        </div>
-
-                        <div
-                            class="bg-zinc-900/50 border border-white/10 rounded-2xl p-6 hover:border-lime-400/50 transition-all">
-                            <div class="text-sm text-white/60 mb-2">LinkedIn</div>
-                            <a href="https://www.linkedin.com/in/ggaleanopy/" target="_blank" rel="noopener noreferrer"
-                                class="text-lime-400 hover:text-lime-300 transition-colors">
-                                /in/ggaleanopy
-                            </a>
-                        </div>
-
-                        <div
-                            class="bg-zinc-900/50 border border-white/10 rounded-2xl p-6 hover:border-lime-400/50 transition-all">
-                            <div class="text-sm text-white/60 mb-2">
-                                <span data-es="Ubicación" data-en="Location">Ubicación</span>
-                            </div>
-                            <div class="text-lime-400">
-                                <span data-es="Asunción, Paraguay" data-en="Asunción, Paraguay">Asunción,
-                                    Paraguay</span>
-                            </div>
-                        </div>
+                    <!-- Social Icons -->
+                    <div class="flex justify-center items-center gap-6 mb-8">
+                        <a href="mailto:ggaleano.py@gmail.com" class="text-white/60 hover:text-lime-400 transition-colors" title="Email">
+                            <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                            </svg>
+                        </a>
+                        <a href="https://www.linkedin.com/in/ggaleanopy/" target="_blank" class="text-white/60 hover:text-lime-400 transition-colors" title="LinkedIn">
+                            <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                            </svg>
+                        </a>
+                        <a href="https://github.com/ggaleanopy" target="_blank" class="text-white/60 hover:text-lime-400 transition-colors" title="GitHub">
+                            <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/>
+                            </svg>
+                        </a>
                     </div>
 
                     <a href="mailto:ggaleano.py@gmail.com"
@@ -1078,11 +1241,34 @@
 
         <!-- Footer -->
         <footer class="py-8 bg-black border-t border-white/10">
-            <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center text-white/60 text-sm">
-                <p data-es="© 2025 Gustavo Adolfo Galeano Duarte · Todos los derechos reservados"
-                    data-en="© 2025 Gustavo Adolfo Galeano Duarte · All rights reserved">
-                    © 2025 Gustavo Adolfo Galeano Duarte · Todos los derechos reservados
-                </p>
+            <div class="max-w-7xl mx-auto px-6 lg:px-8">
+                <div class="flex flex-col items-center gap-4">
+                    <!-- Social Icons -->
+                    <div class="flex items-center gap-6">
+                        <a href="mailto:ggaleano.py@gmail.com" class="text-white/60 hover:text-lime-400 transition-colors" title="Email">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                            </svg>
+                        </a>
+                        <a href="https://www.linkedin.com/in/ggaleanopy/" target="_blank" class="text-white/60 hover:text-lime-400 transition-colors" title="LinkedIn">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                            </svg>
+                        </a>
+                        <a href="https://github.com/ggaleanopy" target="_blank" class="text-white/60 hover:text-lime-400 transition-colors" title="GitHub">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/>
+                            </svg>
+                        </a>
+                    </div>
+                    <!-- Copyright -->
+                    <p class="text-white/60 text-sm">
+                        <span data-es="© 2025 Gustavo Adolfo Galeano Duarte · Todos los derechos reservados"
+                            data-en="© 2025 Gustavo Adolfo Galeano Duarte · All rights reserved">
+                            © 2025 Gustavo Adolfo Galeano Duarte · Todos los derechos reservados
+                        </span>
+                    </p>
+                </div>
             </div>
         </footer>
     </div>
@@ -1091,24 +1277,43 @@
     <div class="print-layout hidden">
         <!-- Sidebar -->
         <div class="print-sidebar" style="padding: 1rem !important;">
-            <div class="flex flex-col items-center mb-3">
+            <div class="flex flex-col items-center mb-2">
                 <img src="img/ggaleano.png" alt="Gustavo Galeano"
                     class="w-24 h-24 rounded-full object-cover border-4 border-white/20 mb-2">
             </div>
 
             <div class="mb-3">
                 <h3 data-es="Contacto" data-en="Contact"
-                    style="margin-bottom: 0.3rem !important; font-size: 0.9rem !important;">Contacto</h3>
-                <div class="text-xs space-y-1.5 text-gray-300">
-                    <p>ggaleano.py@gmail.com</p>
-                    <p>Asunción, Paraguay</p>
-                    <p>linkedin.com/in/ggaleanopy</p>
+                    style="margin-bottom: 0.4rem !important; font-size: 0.9rem !important;">Contacto</h3>
+                <p class="text-xs text-gray-300 mb-1.5">gustavogaleano.me</p>
+                <div class="flex items-center gap-2.5 mb-2">
+                    <a href="mailto:ggaleano.py@gmail.com" style="color: white; text-decoration: none;">
+                        <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.linkedin.com/in/ggaleanopy/" target="_blank" style="color: white; text-decoration: none;">
+                        <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                        </svg>
+                    </a>
+                    <a href="https://github.com/ggaleanopy" target="_blank" style="color: white; text-decoration: none;">
+                        <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/>
+                        </svg>
+                    </a>
+                    <a href="https://gustavogaleano.me" target="_blank" style="color: white; text-decoration: none;">
+                        <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                        </svg>
+                    </a>
                 </div>
+                <p class="text-xs text-gray-300" data-es="Asunción, Paraguay" data-en="Asunción, Paraguay">Asunción, Paraguay</p>
             </div>
 
             <div class="mb-3">
                 <h3 data-es="Educación" data-en="Education"
-                    style="margin-bottom: 0.3rem !important; font-size: 0.9rem !important;">Educación</h3>
+                    style="margin-bottom: 0.4rem !important; font-size: 0.9rem !important;">Educación</h3>
                 <div class="space-y-3 text-xs">
                     <div>
                         <p class="font-bold text-white" data-es="Magíster en TIC" data-en="Master's in ICT">Magíster en TIC</p>
@@ -1127,8 +1332,8 @@
 
             <div class="mb-3">
                 <h3 data-es="Idiomas" data-en="Languages"
-                    style="margin-bottom: 0.3rem !important; font-size: 0.9rem !important;">Idiomas</h3>
-                <div class="space-y-1.5 text-xs text-gray-300">
+                    style="margin-bottom: 0.4rem !important; font-size: 0.9rem !important;">Idiomas</h3>
+                <div class="space-y-2 text-xs text-gray-300">
                     <div>
                         <p class="font-bold text-white" data-es="Español" data-en="Spanish">Español</p>
                         <p class="text-[10px] text-gray-400" data-es="Nativo" data-en="Native">Nativo</p>
@@ -1140,10 +1345,10 @@
                 </div>
             </div>
 
-            <div class="mb-2">
+            <div class="mb-3">
                 <h3 data-es="Habilidades" data-en="Skills"
-                    style="margin-bottom: 0.3rem !important; font-size: 0.9rem !important;">Habilidades</h3>
-                <div class="space-y-1.5 text-xs">
+                    style="margin-bottom: 0.4rem !important; font-size: 0.9rem !important;">Habilidades</h3>
+                <div class="space-y-2 text-xs">
                     <div>
                         <p class="font-bold text-lime-400 mb-0.5">Software Engineering</p>
                         <ul class="list-disc list-inside text-gray-300 text-[10px] space-y-0">
@@ -1153,8 +1358,8 @@
                             <li>Node.js</li>
                             <li>REST APIs</li>
                             <li>SQL Server / EF</li>
-                            <li data-es="PostgreSQL / MySQL / MongoDB /" data-en="PostgreSQL / MySQL / MongoDB /">PostgreSQL / MySQL / MongoDB /</li>
-                            <li style="padding-left: 0.75rem; list-style: none;" data-es="Oracle" data-en="Oracle">Oracle</li>
+                            <li>PostgreSQL / Oracle</li>
+                            <li>MySQL / MongoDB</li>
                             <li data-es="Arquitectura de Software" data-en="Software Architecture">Arquitectura de Software</li>
                             <li data-es="Frontend & Backend" data-en="Frontend & Backend">Frontend & Backend</li>
                             <li data-es="Bases de Datos Relacionales" data-en="Relational Databases">Bases de Datos Relacionales</li>
@@ -1163,7 +1368,7 @@
                             <li data-es="Blockchain" data-en="Blockchain">Blockchain</li>
                         </ul>
                     </div>
-                    <div>
+                    <div class="mt-2">
                         <p class="font-bold text-lime-400 mb-0.5">AI & Machine Learning</p>
                         <ul class="list-disc list-inside text-gray-300 text-[10px] space-y-0">
                             <li>NLP & Transformers</li>
@@ -1173,7 +1378,7 @@
                             <li data-es="Clasificación de Sonido" data-en="Sound Classification">Clasificación de Sonido</li>
                         </ul>
                     </div>
-                    <div>
+                    <div class="mt-2">
                         <p class="font-bold text-lime-400 mb-0.5">Quantum Computing</p>
                         <ul class="list-disc list-inside text-gray-300 text-[10px] space-y-0">
                             <li>Qiskit Framework</li>
@@ -1187,8 +1392,8 @@
 
         <!-- Main Content -->
         <div class="print-main" style="padding: 1rem 1.5rem !important;">
-            <div class="mb-2">
-                <h1 class="text-2xl font-bold text-slate-800 uppercase tracking-wide leading-tight">Gustavo Galeano</h1>
+            <div class="mb-3">
+                <h1 class="text-2xl font-bold text-slate-800 uppercase tracking-wide leading-tight" style="font-size: 1.5rem !important;">Gustavo Galeano</h1>
                 <p class="text-lg text-slate-600 mt-1 font-light uppercase tracking-widest"
                     data-es="Desarrollador de Software | Especialista en IA | Investigador" data-en="Software Developer | AI Specialist | Researcher">
                     Desarrollador de Software | Especialista en IA | Investigador
@@ -1209,61 +1414,60 @@
 
             <div class="mb-3">
                 <h3 data-es="Experiencia" data-en="Experience"
-                    style="margin-bottom: 0.4rem !important; font-size: 1rem !important;">Experiencia</h3>
+                    style="margin-bottom: 0.5rem !important; font-size: 1rem !important;">Experiencia</h3>
 
-                <div class="print-timeline-item" style="margin-bottom: 0.5rem !important;">
+                <div class="print-timeline-item" style="margin-bottom: 0.6rem !important;">
                     <div class="print-timeline-dot"></div>
                     <div class="flex justify-between items-baseline mb-0.5">
                         <h4 class="font-bold text-slate-800 text-sm" data-es="Consultor/Analista/Desarrollador" data-en="Consultant/Analyst/Developer">Consultor/Analista/Desarrollador</h4>
                         <span class="text-[10px] text-slate-500" data-es="2010 - Presente" data-en="2010 - Present">2010 - Presente</span>
                     </div>
                     <p class="text-xs text-slate-600 font-semibold mb-1">Berkemeyer Attorneys and Counselors</p>
-                    <p class="text-[10px] text-slate-500 text-justify leading-snug" data-es="Liderazgo de equipo de desarrollo, mantenimiento de sistemas críticos y consultoría tecnológica externa." data-en="Development team leadership, critical systems maintenance, and external technology consulting.">
-                        Liderazgo de equipo de desarrollo, mantenimiento de sistemas críticos y consultoría tecnológica
-                        externa.
+                    <p class="text-[9px] text-slate-500 text-justify leading-tight" data-es="Jefe de Proyectos y fullstack dev: sistemas para gestión de Propiedad Intelectual. Berkemeyer maneja +70% del mercado de marcas en Paraguay." data-en="Project Manager and fullstack dev: Intellectual Property management systems. Berkemeyer handles +70% of Paraguay's trademark market.">
+                        Jefe de Proyectos y fullstack dev: sistemas para gestión de Propiedad Intelectual. Berkemeyer maneja +70% del mercado de marcas en Paraguay.
                     </p>
                 </div>
 
-                <div class="print-timeline-item" style="margin-bottom: 0.5rem !important;">
+                <div class="print-timeline-item" style="margin-bottom: 0.6rem !important;">
                     <div class="print-timeline-dot"></div>
                     <div class="flex justify-between items-baseline mb-0.5">
                         <h4 class="font-bold text-slate-800 text-sm" data-es="Consultor/Analista/Desarrollador" data-en="Consultant/Analyst/Developer">Consultor/Analista/Desarrollador</h4>
                         <span class="text-[10px] text-slate-500" data-es="2015 - Presente" data-en="2015 - Present">2015 - Presente</span>
                     </div>
-                    <p class="text-xs text-slate-600 font-semibold mb-1" data-es="Hidrovías del Paraguay S.A." data-en="Hidrovías del Paraguay S.A.">Hidrovías del Paraguay S.A.</p>
-                    <p class="text-[10px] text-slate-500 text-justify leading-snug" data-es="Desarrollo de sistemas de navegación, integración GPS y comunicación satelital." data-en="Navigation systems development, GPS integration, and satellite communication.">
-                        Desarrollo de sistemas de navegación, integración GPS y comunicación satelital.
+                    <p class="text-xs text-slate-600 font-semibold mb-0.5" data-es="Hidrovías del Paraguay S.A." data-en="Hidrovías del Paraguay S.A.">Hidrovías del Paraguay S.A.</p>
+                    <p class="text-[9px] text-slate-500 text-justify leading-tight" data-es="Desarrollo HB Bootes: monitoreo en tiempo real de flotas (iOS/Android/Web) en Hidrovía Paraguay/Paraná, Amazonas y Caribe." data-en="HB Bootes development: real-time fleet monitoring (iOS/Android/Web) on Paraguay/Paraná Waterway, Amazon and Caribbean.">
+                        Desarrollo HB Bootes: monitoreo en tiempo real de flotas (iOS/Android/Web) en Hidrovía Paraguay/Paraná, Amazonas y Caribe.
                     </p>
                 </div>
 
-                <div class="print-timeline-item" style="margin-bottom: 0.5rem !important;">
+                <div class="print-timeline-item" style="margin-bottom: 0.6rem !important;">
                     <div class="print-timeline-dot"></div>
                     <div class="flex justify-between items-baseline mb-0.5">
                         <h4 class="font-bold text-slate-800 text-sm" data-es="Especialista IA & Investigador" data-en="AI Specialist & Researcher">Especialista IA & Investigador</h4>
                         <span class="text-[10px] text-slate-500" data-es="2023 - Presente" data-en="2023 - Present">2023 - Presente</span>
                     </div>
-                    <p class="text-xs text-slate-600 font-semibold mb-1" data-es="Facultad Politécnica UNA - Proyectos ANDE/ECEME" data-en="Polytechnic Faculty UNA - ANDE/ECEME Projects">Facultad Politécnica UNA - Proyectos ANDE/ECEME</p>
-                    <p class="text-[10px] text-slate-500 text-justify leading-snug" data-es="Investigación aplicada en IA, NLP y Computación Cuántica. Portal institucional basado en IA y simulación de estrategias. Publicaciones en CACIC 2024 y conferencias nacionales." data-en="Applied research in AI, NLP, and Quantum Computing. AI-based institutional portal and strategy simulation. Publications at CACIC 2024 and national conferences.">
-                        Investigación aplicada en IA, NLP y Computación Cuántica. Portal institucional basado en IA y simulación de estrategias. Publicaciones en CACIC 2024 y conferencias nacionales.
+                    <p class="text-xs text-slate-600 font-semibold mb-0.5" data-es="Facultad Politécnica UNA - Proyectos ANDE/ECEME" data-en="Polytechnic Faculty UNA - ANDE/ECEME Projects">Facultad Politécnica UNA - Proyectos ANDE/ECEME</p>
+                    <p class="text-[9px] text-slate-500 text-justify leading-tight" data-es="ANDE: Chatbot NLP, publicaciones científicas. ECEME: Arquitectura de simulador de estrategias militares con IA." data-en="ANDE: NLP Chatbot, scientific publications. ECEME: Military strategy simulator architecture with AI.">
+                        ANDE: Chatbot NLP, publicaciones científicas. ECEME: Arquitectura de simulador de estrategias militares con IA.
                     </p>
                 </div>
 
-                <div class="print-timeline-item" style="margin-bottom: 0.5rem !important;">
+                <div class="print-timeline-item" style="margin-bottom: 0.4rem !important;">
                     <div class="print-timeline-dot"></div>
                     <div class="flex justify-between items-baseline mb-0.5">
                         <h4 class="font-bold text-slate-800 text-sm" data-es="Jefe del Departamento de Informática" data-en="Head of IT Department">Jefe del Departamento de Informática</h4>
                         <span class="text-[10px] text-slate-500" data-es="5 años" data-en="5 years">5 años</span>
                     </div>
-                    <p class="text-xs text-slate-600 font-semibold mb-1">Berkemeyer Attorneys and Counselors</p>
-                    <p class="text-[10px] text-slate-500 text-justify leading-snug" data-es="Gestión y administración de sistemas empresariales y administrativos. Coordinación, distribución, asignación y seguimiento de tareas del personal." data-en="Management and administration of business and administrative systems. Coordination, distribution, assignment and monitoring of staff tasks.">
-                        Gestión y administración de sistemas empresariales y administrativos. Coordinación, distribución, asignación y seguimiento de tareas del personal.
+                    <p class="text-xs text-slate-600 font-semibold mb-0.5">Berkemeyer Attorneys and Counselors</p>
+                    <p class="text-[9px] text-slate-500 text-justify leading-tight" data-es="Gestión de sistemas empresariales y coordinación de personal técnico." data-en="Business systems management and technical staff coordination.">
+                        Gestión de sistemas empresariales y coordinación de personal técnico.
                     </p>
                 </div>
             </div>
 
             <div class="mb-3">
                 <h3 data-es="Certificaciones" data-en="Certifications"
-                    style="margin-bottom: 0.5rem !important; font-size: 1.05rem !important;">Certificaciones</h3>
+                    style="margin-bottom: 0.5rem !important; font-size: 1rem !important;">Certificaciones</h3>
                 <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-[9px] text-slate-600">
                     <!-- Software Engineering -->
                     <div class="font-bold text-slate-800 col-span-2 mt-0.5 border-b border-slate-200 pb-0.5 mb-0.5">
@@ -1300,10 +1504,10 @@
 
             <div class="mb-3">
                 <h3 data-es="Publicaciones" data-en="Publications"
-                    style="margin-bottom: 0.4rem !important; font-size: 1rem !important;">Publicaciones</h3>
-                <div class="space-y-1 text-[9px] text-slate-600">
+                    style="margin-bottom: 0.5rem !important; font-size: 1rem !important;">Publicaciones</h3>
+                <div class="space-y-1.5 text-[9px] text-slate-600">
                     <p class="font-semibold text-slate-800 leading-tight" data-es="Transformación de la Asistencia en Entidades Gubernamentales a través de NLP Preentrenado" data-en="Transformation of Assistance in Government Entities through Pre-trained NLP">Transformación de la Asistencia en Entidades Gubernamentales a través de NLP Preentrenado</p>
-                    <p class="italic mb-1.5">CACIC 2024, pp. 1441-1445 · Argentina</p>
+                    <p class="italic mb-2">CACIC 2024, pp. 1441-1445 · Argentina</p>
                     
                     <p class="font-semibold text-slate-800 leading-tight" data-es="Modelos de Lenguaje Inclusivos para el Reconocimiento de Entidades Nombradas" data-en="Inclusive Language Models for Named Entity Recognition">Modelos de Lenguaje Inclusivos para el Reconocimiento de Entidades Nombradas</p>
                     <p class="italic" data-es="IX Encuentro de Investigadores SCP · Paraguay 2024" data-en="IX SCP Researchers Meeting · Paraguay 2024">IX Encuentro de Investigadores SCP · Paraguay 2024</p>
@@ -1312,6 +1516,495 @@
         </div>
     </div>
     </div>
+
+    <!-- PRINT LAYOUT EXTENDED (Hidden on web) - Versión con contenido completo -->
+    <div class="print-layout-extended hidden">
+        <!-- PÁGINA 1 -->
+        <div style="display: contents;">
+            <!-- Sidebar Page 1 -->
+            <div class="print-sidebar" style="padding: 1rem !important;">
+                <div class="flex flex-col items-center mb-2">
+                    <img src="img/ggaleano.png" alt="Gustavo Galeano"
+                        class="w-24 h-24 rounded-full object-cover border-4 border-white/20 mb-2">
+                </div>
+
+                <div class="mb-3">
+                    <h3 data-es="Contacto" data-en="Contact"
+                        style="margin-bottom: 0.4rem !important; font-size: 0.9rem !important;">Contacto</h3>
+                    <p class="text-xs text-gray-300 mb-1.5">gustavogaleano.me</p>
+                    <div class="flex items-center gap-2.5 mb-2">
+                        <a href="mailto:ggaleano.py@gmail.com" style="color: white; text-decoration: none;">
+                            <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                            </svg>
+                        </a>
+                        <a href="https://www.linkedin.com/in/ggaleanopy/" target="_blank" style="color: white; text-decoration: none;">
+                            <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                            </svg>
+                        </a>
+                        <a href="https://github.com/ggaleanopy" target="_blank" style="color: white; text-decoration: none;">
+                            <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/>
+                            </svg>
+                        </a>
+                        <a href="https://gustavogaleano.me" target="_blank" style="color: white; text-decoration: none;">
+                            <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                            </svg>
+                        </a>
+                    </div>
+                    <p class="text-xs text-gray-300" data-es="Asunción, Paraguay" data-en="Asunción, Paraguay">Asunción, Paraguay</p>
+                </div>
+
+                <div class="mb-3">
+                    <h3 data-es="Educación" data-en="Education"
+                        style="margin-bottom: 0.4rem !important; font-size: 0.9rem !important;">Educación</h3>
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <p class="font-bold text-white" data-es="Magíster en TIC" data-en="Master's in ICT">Magíster en TIC</p>
+                            <p class="text-gray-400 text-[10px]" data-es="Facultad Politécnica UNA (En curso)" data-en="Polytechnic Faculty UNA (In progress)">Facultad Politécnica UNA (En curso)</p>
+                        </div>
+                        <div>
+                            <p class="font-bold text-white" data-es="Diplomado en NLP & IA" data-en="Diploma in NLP & AI">Diplomado en NLP & IA</p>
+                            <p class="text-gray-400 text-[10px]" data-es="Facultad Politécnica UNA (2025)" data-en="Polytechnic Faculty UNA (2025)">Facultad Politécnica UNA (2025)</p>
+                        </div>
+                        <div>
+                            <p class="font-bold text-white" data-es="Lic. Análisis de Sistemas" data-en="B.Sc. Systems Analysis">Lic. Análisis de Sistemas</p>
+                            <p class="text-gray-400 text-[10px]" data-es="Facultad Politécnica UNA (2006)" data-en="Polytechnic Faculty UNA (2006)">Facultad Politécnica UNA (2006)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <h3 data-es="Idiomas" data-en="Languages"
+                        style="margin-bottom: 0.4rem !important; font-size: 0.9rem !important;">Idiomas</h3>
+                    <div class="space-y-2 text-xs text-gray-300">
+                        <div>
+                            <p class="font-bold text-white" data-es="Español" data-en="Spanish">Español</p>
+                            <p class="text-[10px] text-gray-400" data-es="Nativo" data-en="Native">Nativo</p>
+                        </div>
+                        <div>
+                            <p class="font-bold text-white" data-es="Inglés" data-en="English">Inglés</p>
+                            <p class="text-[10px] text-gray-400">B2+</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <h3 data-es="Habilidades" data-en="Skills"
+                        style="margin-bottom: 0.4rem !important; font-size: 0.9rem !important;">Habilidades</h3>
+                    <div class="space-y-2 text-xs">
+                        <div>
+                            <p class="font-bold text-lime-400 mb-0.5">Software Engineering</p>
+                            <ul class="list-disc list-inside text-gray-300 text-[10px] space-y-0">
+                                <li>Angular / TypeScript / JavaScript</li>
+                                <li>.NET / C# / ASP.NET</li>
+                                <li>Python / FastAPI</li>
+                                <li>Node.js</li>
+                                <li>REST APIs</li>
+                                <li>SQL Server / EF</li>
+                                <li>PostgreSQL / Oracle</li>
+                                <li>MySQL / MongoDB</li>
+                                <li data-es="Arquitectura de Software" data-en="Software Architecture">Arquitectura de Software</li>
+                                <li data-es="Frontend & Backend" data-en="Frontend & Backend">Frontend & Backend</li>
+                                <li data-es="Bases de Datos Relacionales" data-en="Relational Databases">Bases de Datos Relacionales</li>
+                                <li data-es="Liderazgo de Equipos" data-en="Team Leadership">Liderazgo de Equipos</li>
+                                <li data-es="Desarrollo Móvil" data-en="Mobile Development">Desarrollo Móvil</li>
+                                <li data-es="Blockchain" data-en="Blockchain">Blockchain</li>
+                            </ul>
+                        </div>
+                        <div class="mt-2">
+                            <p class="font-bold text-lime-400 mb-0.5">AI & Machine Learning</p>
+                            <ul class="list-disc list-inside text-gray-300 text-[10px] space-y-0">
+                                <li>NLP & Transformers</li>
+                                <li>Meta-Embeddings</li>
+                                <li>Text Classification</li>
+                                <li data-es="Agentes Conversacionales" data-en="Conversational Agents">Agentes Conversacionales</li>
+                                <li data-es="Clasificación de Sonido" data-en="Sound Classification">Clasificación de Sonido</li>
+                            </ul>
+                        </div>
+                        <div class="mt-2">
+                            <p class="font-bold text-lime-400 mb-0.5">Quantum Computing</p>
+                            <ul class="list-disc list-inside text-gray-300 text-[10px] space-y-0">
+                                <li>Qiskit Framework</li>
+                                <li>Quantum Algorithms</li>
+                                <li>NISQ Systems</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Page 1 -->
+            <div class="print-main" style="padding: 1.2rem 1.5rem !important;">
+                <div style="margin-bottom: 0.8rem !important;">
+                    <h1 class="text-2xl font-bold text-slate-800 uppercase tracking-wide leading-tight" style="font-size: 1.5rem !important;">Gustavo Galeano</h1>
+                    <p class="text-lg text-slate-600 mt-1 font-light uppercase tracking-widest"
+                        data-es="Desarrollador de Software | Especialista en IA | Investigador" data-en="Software Developer | AI Specialist | Researcher">
+                        Desarrollador de Software | Especialista en IA | Investigador
+                    </p>
+                </div>
+
+                <div style="margin-bottom: 0.8rem !important;">
+                    <h3 data-es="Resumen Profesional" data-en="Professional Summary"
+                        style="margin-bottom: 0.4rem !important; font-size: 1rem !important;">Resumen Profesional</h3>
+                    <div class="text-[10px] text-slate-600 leading-snug text-justify space-y-1">
+                        <p data-es="Cuento con 21+ años de experiencia en desarrollo de sistemas de distintos ámbitos, desde sistemas de gestión académica (Acad5 – CNC, UNA), gestión de Propiedad Intelectual, hasta sistemas de navegación de embarcaciones en la Hidrovía Paraguay–Paraná."
+                            data-en="I have 21+ years of experience in systems development across various domains, from academic management systems (Acad5 – CNC, UNA), intellectual property management, to vessel navigation systems on the Paraguay-Paraná Waterway.">
+                            Cuento con 21+ años de experiencia en desarrollo de sistemas de distintos ámbitos, desde sistemas de gestión académica (Acad5 – CNC, UNA), gestión de Propiedad Intelectual, hasta sistemas de navegación de embarcaciones en la Hidrovía Paraguay–Paraná.
+                        </p>
+                        <p data-es="Poseo acabado conocimiento de numerosos lenguajes de programación tanto front como backend, así como manejo de bases de datos relacionales y sus lenguajes de programación."
+                            data-en="I possess comprehensive knowledge of numerous programming languages for both frontend and backend, as well as relational database management and their programming languages.">
+                            Poseo acabado conocimiento de numerosos lenguajes de programación tanto front como backend, así como manejo de bases de datos relacionales y sus lenguajes de programación.
+                        </p>
+                        <p data-es="He liderado proyectos de desarrollo de software, tengo facilidad para la investigación y me agrada compartir y recibir conocimiento todo el tiempo."
+                            data-en="I have led software development projects, have a facility for research, and enjoy sharing and receiving knowledge all the time.">
+                            He liderado proyectos de desarrollo de software, tengo facilidad para la investigación y me agrada compartir y recibir conocimiento todo el tiempo.
+                        </p>
+                        <p data-es="Actualmente me encuentro colaborando en el proyecto 'Investigación Aplicada a un Portal Institucional basado en Inteligencia Artificial', en el marco del Convenio entre la Administración Nacional de Electricidad (ANDE) y la Facultad Politécnica de la Universidad Nacional de Asunción, desempeñándome como Especialista en Inteligencia Artificial."
+                            data-en="I am currently collaborating on the project 'Applied Research on an AI-based Institutional Portal', within the framework of the Agreement between the National Electricity Administration (ANDE) and the Polytechnic Faculty of the National University of Asunción, serving as an Artificial Intelligence Specialist.">
+                            Actualmente me encuentro colaborando en el proyecto "Investigación Aplicada a un Portal Institucional basado en Inteligencia Artificial", en el marco del Convenio entre la Administración Nacional de Electricidad (ANDE) y la Facultad Politécnica de la Universidad Nacional de Asunción, desempeñándome como Especialista en Inteligencia Artificial.
+                        </p>
+                        <p data-es="Asimismo, fui Investigador Asociado en el proyecto conjunto entre la Facultad Politécnica y la Escuela de Comando y Estado Mayor del Ejército –ECEME– denominado 'Simulación de Estrategias de Batalla para el Ejército Paraguayo', donde contribuí en el diseño y desarrollo de sistemas de simulación aplicados al análisis estratégico y operativo."
+                            data-en="I was also an Associate Researcher in the joint project between the Polytechnic Faculty and the Army Command and Staff School –ECEME– called 'Battle Strategy Simulation for the Paraguayan Army', where I contributed to the design and development of simulation systems applied to strategic and operational analysis.">
+                            Asimismo, fui Investigador Asociado en el proyecto conjunto entre la Facultad Politécnica y la Escuela de Comando y Estado Mayor del Ejército –ECEME– denominado "Simulación de Estrategias de Batalla para el Ejército Paraguayo", donde contribuí en el diseño y desarrollo de sistemas de simulación aplicados al análisis estratégico y operativo.
+                        </p>
+                        <p data-es="De manera paralela, vengo profundizando mis estudios y trabajo aplicado en Procesamiento de Lenguaje Natural (PLN) —particularmente modelos basados en transformers, meta-embeddings multilingües, clasificación supervisada de textos y análisis de code-switching (español–guaraní)— así como en Computación Cuántica, explorando algoritmos cuánticos de optimización y simulación, frameworks como Qiskit y su aplicación en escenarios NISQ."
+                            data-en="In parallel, I have been deepening my studies and applied work in Natural Language Processing (NLP) —particularly transformer-based models, multilingual meta-embeddings, supervised text classification, and code-switching analysis (Spanish–Guaraní)— as well as in Quantum Computing, exploring quantum optimization and simulation algorithms, frameworks like Qiskit, and their application in NISQ scenarios.">
+                            De manera paralela, vengo profundizando mis estudios y trabajo aplicado en Procesamiento de Lenguaje Natural (PLN) —particularmente modelos basados en transformers, meta-embeddings multilingües, clasificación supervisada de textos y análisis de code-switching (español–guaraní)— así como en Computación Cuántica, explorando algoritmos cuánticos de optimización y simulación, frameworks como Qiskit y su aplicación en escenarios NISQ.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 0.8rem !important;">
+                    <h3 data-es="Experiencia" data-en="Experience"
+                        style="margin-bottom: 0.4rem !important; font-size: 1rem !important;">Experiencia</h3>
+
+                    <div class="print-timeline-item" style="margin-bottom: 0.5rem !important;">
+                        <div class="print-timeline-dot"></div>
+                        <div class="flex justify-between items-baseline mb-0.5">
+                            <h4 class="font-bold text-slate-800 text-sm" data-es="Consultor/Analista/Desarrollador" data-en="Consultant/Analyst/Developer">Consultor/Analista/Desarrollador</h4>
+                            <span class="text-[10px] text-slate-500" data-es="2010 - Presente" data-en="2010 - Present">2010 - Presente</span>
+                        </div>
+                        <p class="text-xs text-slate-600 font-semibold mb-0.5">Berkemeyer Attorneys and Counselors</p>
+                        <p class="text-[10px] text-slate-500 text-justify leading-snug mb-1" data-es="Bajo mi gestión como Jefe de Proyectos y fullstack dev, se desarrollaron sistemas y aplicaciones. Estas herramientas permiten la gestión completa de los procesos de seguimiento, flujos de trabajo, servicios web de toda la información de Propiedad Intelectual del bufete. Gracias a ello, la gestión de la cartera de clientes es eficiente. Cabe destacar que Berkemeyer Attorneys and Counselors maneja más del 70% del mercado de marcas en Paraguay y cuenta con clientes de todo el mundo."
+                            data-en="Under my management as Project Manager and fullstack dev, systems and applications were developed. These tools allow complete management of tracking processes, workflows, web services for all Intellectual Property information of the firm. Thanks to this, client portfolio management is efficient. It's worth noting that Berkemeyer Attorneys and Counselors handles more than 70% of the trademark market in Paraguay and has clients worldwide.">
+                            Bajo mi gestión como Jefe de Proyectos y fullstack dev, se desarrollaron sistemas y aplicaciones. Estas herramientas permiten la gestión completa de los procesos de seguimiento, flujos de trabajo, servicios web de toda la información de Propiedad Intelectual del bufete. Gracias a ello, la gestión de la cartera de clientes es eficiente. Cabe destacar que Berkemeyer Attorneys and Counselors maneja más del 70% del mercado de marcas en Paraguay y cuenta con clientes de todo el mundo.
+                        </p>
+                        <p class="text-[9px] text-slate-400 italic">Tech: ASP.NET, C#, Visual Basic, ASP, Microsoft SQL Server</p>
+                    </div>
+
+                    <div class="print-timeline-item" style="margin-bottom: 0.6rem !important;">
+                        <div class="print-timeline-dot"></div>
+                        <div class="flex justify-between items-baseline mb-0.5">
+                            <h4 class="font-bold text-slate-800 text-sm" data-es="Consultor/Analista/Desarrollador" data-en="Consultant/Analyst/Developer">Consultor/Analista/Desarrollador</h4>
+                            <span class="text-[10px] text-slate-500" data-es="2015 - Presente" data-en="2015 - Present">2015 - Presente</span>
+                        </div>
+                        <p class="text-xs text-slate-600 font-semibold mb-0.5" data-es="Hidrovías del Paraguay S.A." data-en="Hidrovías del Paraguay S.A.">Hidrovías del Paraguay S.A.</p>
+                        <p class="text-[10px] text-slate-500 text-justify leading-snug mb-1" data-es="Gracias a mi trabajo en el desarrollo e implementación de HB Bootes, fue posible centralizar el monitoreo en tiempo real de toda la flota de buques de la empresa a lo largo de la Hidrovía Paraguay/Paraná, así como de la cuenca norte del río Amazonas y el mar Caribe. La suite de aplicaciones está disponible para iOS, Android y web. Usuarios de Brasil, Uruguay y Paraguay utilizan HB Bootes para obtener información online sobre rutas, consumo de combustible y una amplia variedad de datos sobre flotas gracias a la unificación de servicios como GPS, AIS, AccuWeather entre otros, que ofrece esta plataforma."
+                            data-en="Thanks to my work in the development and implementation of HB Bootes, it was possible to centralize real-time monitoring of the entire company fleet along the Paraguay/Paraná Waterway, as well as the northern Amazon River basin and the Caribbean Sea. The application suite is available for iOS, Android and web. Users from Brazil, Uruguay and Paraguay use HB Bootes to obtain online information about routes, fuel consumption and a wide variety of fleet data thanks to the unification of services such as GPS, AIS, AccuWeather among others, offered by this platform.">
+                            Gracias a mi trabajo en el desarrollo e implementación de HB Bootes, fue posible centralizar el monitoreo en tiempo real de toda la flota de buques de la empresa a lo largo de la Hidrovía Paraguay/Paraná, así como de la cuenca norte del río Amazonas y el mar Caribe. La suite de aplicaciones está disponible para iOS, Android y web. Usuarios de Brasil, Uruguay y Paraguay utilizan HB Bootes para obtener información online sobre rutas, consumo de combustible y una amplia variedad de datos sobre flotas gracias a la unificación de servicios como GPS, AIS, AccuWeather entre otros, que ofrece esta plataforma.
+                        </p>
+                        <p class="text-[9px] text-slate-400 italic">Tech: ASP.NET, C#, .NET Core, React, AngularJS, Microsoft SQL Server, JavaScript, Node.js, Express.js, MongoDB</p>
+                    </div>
+
+                    <div class="print-timeline-item" style="margin-bottom: 0.6rem !important;">
+                        <div class="print-timeline-dot"></div>
+                        <div class="flex justify-between items-baseline mb-0.5">
+                            <h4 class="font-bold text-slate-800 text-sm" data-es="Especialista IA & Investigador" data-en="AI Specialist & Researcher">Especialista IA & Investigador</h4>
+                            <span class="text-[10px] text-slate-500" data-es="2023 - Presente" data-en="2023 - Present">2023 - Presente</span>
+                        </div>
+                        <p class="text-xs text-slate-600 font-semibold mb-0.5" data-es="Facultad Politécnica UNA - Proyectos ANDE/ECEME" data-en="Polytechnic Faculty UNA - ANDE/ECEME Projects">Facultad Politécnica UNA - Proyectos ANDE/ECEME</p>
+                        <p class="text-[10px] text-slate-500 text-justify leading-snug mb-1" data-es="ANDE: Como resultado de mi gestión, la ANDE ha avanzado significativamente en la implementación de tecnologías innovadoras para mejorar la experiencia del usuario y optimizar los procesos internos. En particular, se viene trabajando en la puesta en marcha de un chatbot basado en procesamiento del lenguaje natural (NLP), que permite una comunicación más eficiente y personalizada con los usuarios. Además, se ha llevado a cabo una investigación exhaustiva que está dando como resultado en la creación de artículos científicos presentados en reconocidas conferencias internacionales."
+                            data-en="ANDE: As a result of my management, ANDE has advanced significantly in implementing innovative technologies to improve user experience and optimize internal processes. In particular, work is being done on implementing a chatbot based on natural language processing (NLP), which allows more efficient and personalized communication with users. Additionally, exhaustive research has been conducted resulting in the creation of scientific articles presented at recognized international conferences.">ANDE: Como resultado de mi gestión, la ANDE ha avanzado significativamente en la implementación de tecnologías innovadoras para mejorar la experiencia del usuario y optimizar los procesos internos. En particular, se viene trabajando en la puesta en marcha de un chatbot basado en procesamiento del lenguaje natural (NLP), que permite una comunicación más eficiente y personalizada con los usuarios. Además, se ha llevado a cabo una investigación exhaustiva que está dando como resultado en la creación de artículos científicos presentados en reconocidas conferencias internacionales.</p>
+                        <p class="text-[10px] text-slate-500 text-justify leading-snug mb-1" data-es="ECEME: Como consecuencia de mi labor en el proyecto de I+D+I Aplicada a la Gestión de Simulación de Estrategias de Batalla para el Ejército Paraguayo, se logró definir la arquitectura del sistema de simulación, estableciendo los requisitos técnicos clave para su desarrollo. Se analizaron y compararon motores de simulación, modelos de terreno y clima, e integración de inteligencia artificial para maximizar el realismo y la eficiencia del sistema."
+                            data-en="ECEME: As a consequence of my work on the R&D&I project Applied to Battle Strategy Simulation Management for the Paraguayan Army, the simulation system architecture was defined, establishing key technical requirements for its development. Simulation engines, terrain and climate models, and artificial intelligence integration were analyzed and compared to maximize system realism and efficiency.">ECEME: Como consecuencia de mi labor en el proyecto de I+D+I Aplicada a la Gestión de Simulación de Estrategias de Batalla para el Ejército Paraguayo, se logró definir la arquitectura del sistema de simulación, estableciendo los requisitos técnicos clave para su desarrollo. Se analizaron y compararon motores de simulación, modelos de terreno y clima, e integración de inteligencia artificial para maximizar el realismo y la eficiencia del sistema.</p>
+                        <p class="text-[9px] text-slate-400 italic">Tech ANDE: Python, Tensorflow, Pytorch, MongoDB | Tech ECEME: Java, MASON, GeoTools</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PÁGINA 2 -->
+        <div style="display: contents;">
+            <!-- Sidebar Page 2 - DUPLICADA -->
+            <div class="print-sidebar" style="padding: 1rem !important;">
+                <div class="flex flex-col items-center mb-2">
+                    <img src="img/ggaleano.png" alt="Gustavo Galeano"
+                        class="w-24 h-24 rounded-full object-cover border-4 border-white/20 mb-2">
+                </div>
+
+                <div class="mb-3">
+                    <h3 data-es="Contacto" data-en="Contact"
+                        style="margin-bottom: 0.4rem !important; font-size: 0.9rem !important;">Contacto</h3>
+                    <p class="text-xs text-gray-300 mb-1.5">gustavogaleano.me</p>
+                    <div class="flex items-center gap-2.5 mb-2">
+                        <a href="mailto:ggaleano.py@gmail.com" style="color: white; text-decoration: none;">
+                            <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                            </svg>
+                        </a>
+                        <a href="https://www.linkedin.com/in/ggaleanopy/" target="_blank" style="color: white; text-decoration: none;">
+                            <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                            </svg>
+                        </a>
+                        <a href="https://github.com/ggaleanopy" target="_blank" style="color: white; text-decoration: none;">
+                            <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/>
+                            </svg>
+                        </a>
+                        <a href="https://gustavogaleano.me" target="_blank" style="color: white; text-decoration: none;">
+                            <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                            </svg>
+                        </a>
+                    </div>
+                    <p class="text-xs text-gray-300" data-es="Asunción, Paraguay" data-en="Asunción, Paraguay">Asunción, Paraguay</p>
+                </div>
+
+                <div class="mb-3">
+                    <h3 data-es="Educación" data-en="Education"
+                        style="margin-bottom: 0.4rem !important; font-size: 0.9rem !important;">Educación</h3>
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <p class="font-bold text-white" data-es="Magíster en TIC" data-en="Master's in ICT">Magíster en TIC</p>
+                            <p class="text-gray-400 text-[10px]" data-es="Facultad Politécnica UNA (En curso)" data-en="Polytechnic Faculty UNA (In progress)">Facultad Politécnica UNA (En curso)</p>
+                        </div>
+                        <div>
+                            <p class="font-bold text-white" data-es="Diplomado en NLP & IA" data-en="Diploma in NLP & AI">Diplomado en NLP & IA</p>
+                            <p class="text-gray-400 text-[10px]" data-es="Facultad Politécnica UNA (2025)" data-en="Polytechnic Faculty UNA (2025)">Facultad Politécnica UNA (2025)</p>
+                        </div>
+                        <div>
+                            <p class="font-bold text-white" data-es="Lic. Análisis de Sistemas" data-en="B.Sc. Systems Analysis">Lic. Análisis de Sistemas</p>
+                            <p class="text-gray-400 text-[10px]" data-es="Facultad Politécnica UNA (2006)" data-en="Polytechnic Faculty UNA (2006)">Facultad Politécnica UNA (2006)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <h3 data-es="Idiomas" data-en="Languages"
+                        style="margin-bottom: 0.4rem !important; font-size: 0.9rem !important;">Idiomas</h3>
+                    <div class="space-y-2 text-xs text-gray-300">
+                        <div>
+                            <p class="font-bold text-white" data-es="Español" data-en="Spanish">Español</p>
+                            <p class="text-[10px] text-gray-400" data-es="Nativo" data-en="Native">Nativo</p>
+                        </div>
+                        <div>
+                            <p class="font-bold text-white" data-es="Inglés" data-en="English">Inglés</p>
+                            <p class="text-[10px] text-gray-400">B2+</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <h3 data-es="Habilidades" data-en="Skills"
+                        style="margin-bottom: 0.4rem !important; font-size: 0.9rem !important;">Habilidades</h3>
+                    <div class="space-y-2 text-xs">
+                        <div>
+                            <p class="font-bold text-lime-400 mb-0.5">Software Engineering</p>
+                            <ul class="list-disc list-inside text-gray-300 text-[10px] space-y-0">
+                                <li>Angular / TypeScript / JavaScript</li>
+                                <li>.NET / C# / ASP.NET</li>
+                                <li>Python / FastAPI</li>
+                                <li>Node.js</li>
+                                <li>REST APIs</li>
+                                <li>SQL Server / EF</li>
+                                <li>PostgreSQL / Oracle</li>
+                                <li>MySQL / MongoDB</li>
+                                <li data-es="Arquitectura de Software" data-en="Software Architecture">Arquitectura de Software</li>
+                                <li data-es="Frontend & Backend" data-en="Frontend & Backend">Frontend & Backend</li>
+                                <li data-es="Bases de Datos Relacionales" data-en="Relational Databases">Bases de Datos Relacionales</li>
+                                <li data-es="Liderazgo de Equipos" data-en="Team Leadership">Liderazgo de Equipos</li>
+                                <li data-es="Desarrollo Móvil" data-en="Mobile Development">Desarrollo Móvil</li>
+                                <li data-es="Blockchain" data-en="Blockchain">Blockchain</li>
+                            </ul>
+                        </div>
+                        <div class="mt-2">
+                            <p class="font-bold text-lime-400 mb-0.5">AI & Machine Learning</p>
+                            <ul class="list-disc list-inside text-gray-300 text-[10px] space-y-0">
+                                <li>NLP & Transformers</li>
+                                <li>Meta-Embeddings</li>
+                                <li>Text Classification</li>
+                                <li data-es="Agentes Conversacionales" data-en="Conversational Agents">Agentes Conversacionales</li>
+                                <li data-es="Clasificación de Sonido" data-en="Sound Classification">Clasificación de Sonido</li>
+                            </ul>
+                        </div>
+                        <div class="mt-2">
+                            <p class="font-bold text-lime-400 mb-0.5">Quantum Computing</p>
+                            <ul class="list-disc list-inside text-gray-300 text-[10px] space-y-0">
+                                <li>Qiskit Framework</li>
+                                <li>Quantum Algorithms</li>
+                                <li>NISQ Systems</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Page 2 -->
+            <div class="print-main" style="padding: 2rem 1.5rem 1rem 1.5rem !important;">
+                <!-- Resto de Experiencia -->
+                <div style="margin-bottom: 0.8rem !important;">
+                    <h3 data-es="Experiencia (Continuación)" data-en="Experience (Continued)"
+                        style="margin-bottom: 0.4rem !important; font-size: 1rem !important;">Experiencia (Continuación)</h3>
+
+                    <div class="print-timeline-item" style="margin-bottom: 0.5rem !important;">
+                        <div class="print-timeline-dot"></div>
+                        <div class="flex justify-between items-baseline mb-0.5">
+                            <h4 class="font-bold text-slate-800 text-sm" data-es="Profesor de Programación" data-en="Programming Professor">Profesor de Programación</h4>
+                            <span class="text-[10px] text-slate-500" data-es="2022 - Presente" data-en="2022 - Present">2022 - Presente</span>
+                        </div>
+                        <p class="text-xs text-slate-600 font-semibold mb-0.5" data-es="Facultad Politécnica UNA" data-en="Polytechnic Faculty UNA">Facultad Politécnica UNA</p>
+                        <p class="text-[10px] text-slate-500 text-justify leading-snug mb-1" data-es="Encargado de Cátedra y Auxiliar de Enseñanza en Carreras Informáticas: Algorítmica y Estructuras de Datos"
+                            data-en="Course Coordinator and Teaching Assistant in Computer Science Programs: Algorithms and Data Structures">
+                            Encargado de Cátedra y Auxiliar de Enseñanza en Carreras Informáticas: Algorítmica y Estructuras de Datos
+                        </p>
+                        <p class="text-[9px] text-slate-400 italic">Tech: Java, C, C++</p>
+                    </div>
+
+                    <div class="print-timeline-item" style="margin-bottom: 0.5rem !important;">
+                        <div class="print-timeline-dot"></div>
+                        <div class="flex justify-between items-baseline mb-0.5">
+                            <h4 class="font-bold text-slate-800 text-sm" data-es="Jefe del Departamento de Informática" data-en="Head of IT Department">Jefe del Departamento de Informática</h4>
+                            <span class="text-[10px] text-slate-500" data-es="5 años" data-en="5 years">5 años</span>
+                        </div>
+                        <p class="text-xs text-slate-600 font-semibold mb-0.5">Berkemeyer Attorneys and Counselors</p>
+                        <p class="text-[10px] text-slate-500 text-justify leading-snug mb-1" data-es="Gestión y administración de sistemas empresariales y administrativos. Coordinación, distribución, asignación y seguimiento de tareas del personal técnico." data-en="Management and administration of business and administrative systems. Coordination, distribution, assignment and monitoring of technical staff tasks.">
+                            Gestión y administración de sistemas empresariales y administrativos. Coordinación, distribución, asignación y seguimiento de tareas del personal técnico.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 0.8rem !important;">
+                    <h3 data-es="Certificaciones & Cursos" data-en="Certifications & Courses"
+                        style="margin-bottom: 0.4rem !important; font-size: 1rem !important;">Certificaciones & Cursos</h3>
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-[9px] text-slate-600">
+                        <!-- Software Engineering -->
+                        <div class="font-bold text-slate-800 col-span-2 mt-0.5 border-b border-slate-200 pb-0.5 mb-0.5">
+                            Software Engineering (7)</div>
+                        <div data-es="• Ingeniería de Requisitos (20h)" data-en="• Requirements Engineering (20h)">• Ingeniería de Requisitos (20h)</div>
+                        <div data-es="• Gobierno de las TICs (20h)" data-en="• ICT Governance (20h)">• Gobierno de las TICs (20h)</div>
+                        <div data-es="• Modelado de Procesos (40h)" data-en="• Process Modeling (40h)">• Modelado de Procesos (40h)</div>
+                        <div data-es="• Ing. Software con Modelos (20h)" data-en="• Model-Driven Software Eng. (20h)">• Ing. Software con Modelos (20h)</div>
+                        <div data-es="• Calidad y Métricas (25h)" data-en="• Quality & Metrics (25h)">• Calidad y Métricas (25h)</div>
+                        <div data-es="• Gestión Ágil de Proyectos (40h)" data-en="• Agile Project Management (40h)">• Gestión Ágil de Proyectos (40h)</div>
+                        <div data-es="• Bases de Datos Avanzadas (25h)" data-en="• Advanced Databases (25h)">• Bases de Datos Avanzadas (25h)</div>
+
+                        <!-- AI & Machine Learning -->
+                        <div class="font-bold text-slate-800 col-span-2 mt-1.5 border-b border-slate-200 pb-0.5 mb-0.5">AI &
+                            Machine Learning (2)</div>
+                        <div data-es="• Extracción de Conocimiento (40h)" data-en="• Knowledge Extraction (40h)">• Extracción de Conocimiento (40h)</div>
+                        <div data-es="• Tópicos Algoritmos Avanzados (30h)" data-en="• Advanced Algorithms Topics (30h)">• Tópicos Algoritmos Avanzados (30h)</div>
+
+                        <!-- Quantum Computing -->
+                        <div class="font-bold text-slate-800 col-span-2 mt-1.5 border-b border-slate-200 pb-0.5 mb-0.5">
+                            Quantum Computing (2)</div>
+                        <div data-es="• Algoritmos Cuánticos (12h)" data-en="• Quantum Algorithms (12h)">• Algoritmos Cuánticos (12h)</div>
+                        <div>• Quantum Hackathon 2025</div>
+
+                        <!-- Security & Others -->
+                        <div class="font-bold text-slate-800 col-span-2 mt-1.5 border-b border-slate-200 pb-0.5 mb-0.5" data-es="Seguridad & Otros (10)" data-en="Security & Others (10)">
+                            Seguridad & Otros (10)</div>
+                        <div data-es="• Seguridad en Redes (40h)" data-en="• Network Security (40h)">• Seguridad en Redes (40h)</div>
+                        <div data-es="• Criptografía Avanzada (30h)" data-en="• Advanced Cryptography (30h)">• Criptografía Avanzada (30h)</div>
+                        <div data-es="• Estadística Inferencial (40h)" data-en="• Inferential Statistics (40h)">• Estadística Inferencial (40h)</div>
+                        <div data-es="• Estadística Descriptiva (40h)" data-en="• Descriptive Statistics (40h)">• Estadística Descriptiva (40h)</div>
+                        <div data-es="• Metodología de Investigación (40h)" data-en="• Research Methodology (40h)">• Metodología de Investigación (40h)</div>
+                        <div data-es="• Redacción Científica (80h)" data-en="• Scientific Writing (80h)">• Redacción Científica (80h)</div>
+                        <div data-es="• Didáctica Univ. (110h)" data-en="• University Didactics (110h)">• Didáctica Univ. (110h)</div>
+                        <div>• PMP Prep (72h)</div>
+                        <div data-es="• Desarrollo Web (60h)" data-en="• Web Development (60h)">• Desarrollo Web (60h)</div>
+                        <div>• MongoDB Basics (8h)</div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 0.6rem !important;">
+                    <h3 data-es="Publicaciones" data-en="Publications"
+                        style="margin-bottom: 0.4rem !important; font-size: 1rem !important;">Publicaciones</h3>
+                    <div class="space-y-1.5 text-[9px] text-slate-600">
+                        <div>
+                            <p class="font-semibold text-slate-800 leading-tight" data-es="Transformación de la Asistencia en Entidades Gubernamentales a través de NLP Preentrenado" data-en="Transformation of Assistance in Government Entities through Pre-trained NLP">Transformación de la Asistencia en Entidades Gubernamentales a través de NLP Preentrenado</p>
+                            <p class="italic">CACIC 2024, pp. 1441-1445 · Argentina</p>
+                        </div>
+                        
+                        <div>
+                            <p class="font-semibold text-slate-800 leading-tight" data-es="Modelos de Lenguaje Inclusivos para el Reconocimiento de Entidades Nombradas" data-en="Inclusive Language Models for Named Entity Recognition">Modelos de Lenguaje Inclusivos para el Reconocimiento de Entidades Nombradas</p>
+                            <p class="italic" data-es="IX Encuentro de Investigadores SCP · Paraguay 2024" data-en="IX SCP Researchers Meeting · Paraguay 2024">IX Encuentro de Investigadores SCP · Paraguay 2024</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Exportación PDF -->
+    <div id="pdfModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 items-center justify-center p-4">
+        <div class="bg-zinc-900 rounded-2xl max-w-md w-full p-8 border border-white/10 shadow-2xl animate-fade-in">
+            <h3 class="text-2xl font-semibold mb-2 text-white">
+                <span data-es="Exportar CV" data-en="Export CV">Exportar CV</span>
+            </h3>
+            <p class="text-white/60 mb-6 text-sm">
+                <span data-es="Selecciona el tipo de PDF que deseas exportar:"
+                    data-en="Select the type of PDF you want to export:">
+                    Selecciona el tipo de PDF que deseas exportar:
+                </span>
+            </p>
+            
+            <div class="space-y-3">
+                <!-- Versión Resumida -->
+                <button onclick="exportResumido()" 
+                    class="w-full bg-lime-500 hover:bg-lime-400 text-black font-semibold py-4 px-6 rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-lime-500/30">
+                    <div class="flex items-center justify-between">
+                        <div class="text-left">
+                            <div class="font-bold text-lg" data-es="📄 Versión Resumida" data-en="📄 Compact Version">📄 Versión Resumida</div>
+                            <div class="text-sm opacity-80" data-es="Formato profesional de 1 página" data-en="Professional 1-page format">Formato profesional de 1 página</div>
+                        </div>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </div>
+                </button>
+
+                <!-- Versión Extendida -->
+                <button onclick="exportExtendido()" 
+                    class="w-full bg-white/10 hover:bg-white/20 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 hover:scale-105 border border-white/20 hover:border-lime-400/50">
+                    <div class="flex items-center justify-between">
+                        <div class="text-left">
+                            <div class="font-bold text-lg" data-es="📑 Versión Extendida" data-en="📑 Extended Version">📑 Versión Extendida</div>
+                            <div class="text-sm opacity-80" data-es="Contenido completo con descripciones" data-en="Full content with descriptions">Contenido completo con descripciones</div>
+                        </div>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Botón Cerrar -->
+            <button onclick="closeModal()" 
+                class="w-full mt-4 text-white/60 hover:text-white py-2 text-sm transition-colors">
+                <span data-es="Cancelar" data-en="Cancel">Cancelar</span>
+            </button>
+        </div>
+    </div>
+
+    <style>
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .animate-fade-in {
+            animation: fade-in 0.2s ease-out;
+        }
+    </style>
 </body>
 
 </html>
